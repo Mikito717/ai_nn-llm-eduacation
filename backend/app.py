@@ -11,14 +11,24 @@ def run_knn():
     k_value = data['k']
     distance_metric = data['distance_metric']
     
+    #try:
     # ここでK-NNの処理を行います
-    new_image_path = '.\\PetImages\\test.jpg'
+    new_image_path = '.\\PetImages\\test_cat.jpg'
     predict=k_nn.k_nn_learning(k_value, distance_metric, new_image_path)
     
+    #予測のラベルから、猫か犬かを判定
+    if predict[1]==0:
+        predict[1]="猫"
+    else:
+        predict[1]="犬"
     result = {
-        'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が完了しました
-        あなたの画像は{predict[0]}点で{predict[1]}です'
+        'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が完了しました。あなたの画像は{predict[0]}点で{predict[1]}です'
     }
+    """except:
+        result = {
+        'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が失敗しました。'
+        }
+    """
     
     return jsonify(result)
 

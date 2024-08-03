@@ -12,7 +12,9 @@ def load_and_preprocess_image(filepath, size=(64, 64)):
         img=img.flatten()
     return img
 
-def k_nn_learning(k_train, new_image_path):
+def k_nn_learning(k_train,distance_metric, new_image_path):
+    #k_trainを整数に変換
+    k_train=int(k_train)
     # データセットの作成
     cat_images = [f'.\\PetImages\\Cat\\{i}.jpg' for i in range(0, k_train)]
     dog_images = [f'.\\PetImages\\Dog\\{i}.jpg' for i in range(0, k_train)]
@@ -66,6 +68,9 @@ def k_nn_learning(k_train, new_image_path):
     result=[]
     result.append(correct_label_count)
     result.append(predicted_label)
+    
+    #実行終了を表示
+    print("K-NNの処理が完了しました")
     
     return result
     
