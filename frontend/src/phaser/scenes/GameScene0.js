@@ -23,8 +23,16 @@ class GameScene0 extends Phaser.Scene {
     this.background = this.add.tileSprite(0, 0, width, height, 'spaceBackground');
     this.background.setOrigin(0, 0);
 
+    //背景がカメラの影響を受けないようにする
+    this.background.setScrollFactor(0);
+
+    //惑星を管理するグループを作成
+    this.planets = this.physics.add.staticGroup();
+    // シーンの初期化時に惑星を生成
+    this.createPlanets();
+
     //宇宙船の移動速度
-    this.spaceshipSpeed = 3;
+    this.spaceshipSpeed = 300;
 
     // 宇宙船を作成
     this.anims.create({
@@ -36,10 +44,6 @@ class GameScene0 extends Phaser.Scene {
       frameRate: 3, // アニメーションのフレームレート
       repeat: -1 // 無限ループ
   });
-
-    // スプライトシート内のフレームを確認
-    const frames = this.textures.get('spaceship').getFrameNames();
-    console.log('Available frames:', frames);
 
     //宇宙船をシーンに追加し、アニメーションを再生
     this.spaceship = this.physics.add.sprite(400, 300, 'spaceship');
@@ -65,26 +69,16 @@ class GameScene0 extends Phaser.Scene {
     this.generateShootingStar();
     this.updateShootingStars();
 
-    //宇宙船の移動速度
-    this.spaceship.setVelocity(0);
-
-    //背景の移動速度（宇宙船の移動速度に合わせる）
-    const backgroundSpeed = this.spaceshipSpeed;
-
     // キーボード入力による宇宙船の移動
     if (this.cursors.up.isDown) {
       this.spaceship.setVelocityY(this.spaceshipSpeed * -1);
-      this.background.tilePositionY -= backgroundSpeed;
     } else if (this.cursors.down.isDown) {
       this.spaceship.setVelocityY(this.spaceshipSpeed);
-      this.background.tilePositionY += backgroundSpeed;
     }
     if (this.cursors.left.isDown) {
       this.spaceship.setVelocityX(this.spaceshipSpeed * -1);
-      this.background.tilePositionX -= backgroundSpeed;
     } else if (this.cursors.right.isDown) {
       this.spaceship.setVelocityX(this.spaceshipSpeed);
-      this.background.tilePositionX += backgroundSpeed;
     }
 
     let angle = 0;
@@ -96,6 +90,8 @@ class GameScene0 extends Phaser.Scene {
       angle = Math.atan2(this.spaceship.body.velocity.x, -this.spaceship.body.velocity.y);
 
     } else {
+      //宇宙船の移動速度
+      this.spaceship.setVelocity(0);
       //宇宙船のアニメーションを停止(spaceshipのフレームで停止)
       this.spaceship.setTexture('spaceship2');
       this.spaceship.anims.stop();
@@ -103,7 +99,59 @@ class GameScene0 extends Phaser.Scene {
 
     // 宇宙船の回転を設定
     this.spaceship.setRotation(angle);
+
+    //キャンバスに写っている惑星の数をカウント
+    let planetcount = 0;
+    const canvasWidth = this.cameras.main.width;
+    const canvasHeight = this.cameras.main.height;
+    this.planets.getChildren().forEach(planet => {
+      if (planet.x > this.cameras.main.scrollX && planet.x < this.cameras.main.scrollX + canvasWidth && planet.y > this.cameras.main.scrollY && planet.y < this.cameras.main.scrollY + canvasHeight) {
+        planetcount++;
+        //console.log("惑星がカメラ内にあります");
+      }
+    });
+
+    //console.log(planetcount);
+    //カメラ内に移っている惑星の数が少ない場合、新たに惑星を生成
+    if (planetcount < 5) {
+      this.createPlanets();
+    }
   }
+
+  // 惑星を生成する関数
+  createPlanets() {
+    const planetCount = 10; // 生成する惑星の数
+    for (let i = 0; i < planetCount; i++) {
+        // ランダムな位置を生成
+        const x = Phaser.Math.Between(this.cameras.main.scrollX, this.cameras.main.scrollX+this.cameras.main.width);
+        const y = Phaser.Math.Between(this.cameras.main.scrollY, this.cameras.main.scrollY+this.cameras.main.height);
+
+        // グラフィックオブジェクトを作成
+        const graphics = this.add.graphics();
+        // 色と透明度を設定(黒、白以外のランダムな色)
+        graphics.fillStyle(Phaser.Display.Color.RandomRGB().color, 1); 
+        graphics.fillCircle(20, 20, 20); // 円を描画
+
+        // グラフィックをテクスチャに変換
+        const textureKey = `planet${i}`;
+        graphics.generateTexture(textureKey, 40, 40);
+        graphics.destroy(); // グラフィックオブジェクトを破棄
+
+        // 惑星を作成し、物理エンジンに追加
+        const planet = this.physics.add.staticSprite(x, y, textureKey);
+        
+        // 惑星オーバーラップを検出
+        //this.physics.add.overlap(this.spaceship, planet, this.handleoverlap, null, this);
+
+        //グループに追加
+        this.planets.add(planet);
+    }
+  }
+
+  handleoverlap() {
+    console.log('惑星に衝突しました');
+  }
+
 
   generateSpaceBackground() {
     const width = 800;
@@ -112,24 +160,6 @@ class GameScene0 extends Phaser.Scene {
     canvas.width = width;
     canvas.height = height;
     const context = canvas.getContext('2d');
-  
-    // ノイズを生成（閾値よりも小さい場合は完全に黒に設定）
-    const threshold = 50;
-    const imageData = context.createImageData(width, height);
-    for (let i = 0; i < imageData.data.length; i += 4) {
-      const value = Math.random() * 50;
-      if (value < threshold) {
-        imageData.data[i] = 0;     // Red
-        imageData.data[i + 1] = 0; // Green
-        imageData.data[i + 2] = 0; // Blue
-      } else {
-        imageData.data[i] = value;     // Red
-        imageData.data[i + 1] = value; // Green
-        imageData.data[i + 2] = value; // Blue
-      }
-      imageData.data[i + 3] = 255;   // Alpha
-    }
-    context.putImageData(imageData, 0, 0);
 
     // 星を追加
     for (let i = 0; i < 100; i++) {
@@ -188,6 +218,8 @@ class GameScene0 extends Phaser.Scene {
       }
     });
   }
+
+  
 }
 
 export default GameScene0;
