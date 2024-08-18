@@ -1,9 +1,10 @@
 import Phaser from 'phaser'
 
 //todo: 惑星と宇宙船の衝突判定を追加
-//todo: 基地となる惑星を作成する
+//todo（済）: 基地となる惑星を作成する
 class GameScene0 extends Phaser.Scene {
   constructor() {
+    // シーンのキーを設定
     super({ key: 'GameScene0' })
 
     //テクスチャキーを管理するためのプロパティ
@@ -16,6 +17,9 @@ class GameScene0 extends Phaser.Scene {
     //宇宙船の画像を読み込む（2枚）
     this.load.image('spaceship', 'assets/rocketimage.png')
     this.load.image('spaceship2', 'assets/rocketimage2.png')
+
+    // 惑星の画像を読み込む
+    this.load.image('basePlanet', 'assets/baseplanet.png')
   }
 
   create() {
@@ -40,7 +44,7 @@ class GameScene0 extends Phaser.Scene {
     //惑星を管理するグループを作成
     this.planets = this.physics.add.staticGroup()
     // シーンの初期化時に惑星を生成
-    this.createPlanets()
+    //this.createPlanets()
 
     //宇宙船の移動速度
     this.spaceshipSpeed = 300
@@ -70,12 +74,60 @@ class GameScene0 extends Phaser.Scene {
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
     })
+
+    //基地となる惑星を生成
+    this.generatebasePlanet()
+
+    //矢印のテクスチャを生成
+    this.generateArrowTexture()
+
+    //惑星のグループを作成
+    this.planets = this.physics.add.staticGroup()
+
+    //惑星と宇宙船のオーバーラップを検出
+    this.physics.add.overlap(this.spaceship, this.planets, this.handleoverlap)
   }
 
   update() {
     // ゲームロジック
     this.generateShootingStar()
     this.updateShootingStars()
+
+    // 宇宙船と基地の位置を取得
+    const spaceshipPosition = this.spaceship.getCenter()
+    const basePlanetPosition = this.basePlanetPosition
+
+    // 基地の方角を計算
+    const angleToBasePlanet = Phaser.Math.Angle.BetweenPoints(
+      spaceshipPosition,
+      basePlanetPosition,
+    )
+
+    // 矢印を表示
+    if (!this.arrow) {
+      this.arrow = this.add.image(
+        //画面中央に固定
+        this.cameras.main.scrollX + this.cameras.main.width / 2,
+        this.cameras.main.scrollY + this.cameras.main.height / 2,
+        'arrow',
+      )
+      this.arrow.setScale(0.5)
+      this.arrow.currentRotation = angleToBasePlanet
+    }
+    // 矢印の位置を宇宙船の周りの同心円上に設定
+    const radius = 100 // 矢印を表示する半径
+    const arrowX = spaceshipPosition.x + radius * Math.cos(angleToBasePlanet)
+    const arrowY = spaceshipPosition.y + radius * Math.sin(angleToBasePlanet)
+    this.arrow.setPosition(Math.round(arrowX), Math.round(arrowY))
+
+    //矢印の回転をスムーズに更新
+    const smoothingFactor = 0.1
+    this.arrow.currentRotation = Phaser.Math.Angle.RotateTo(
+      this.arrow.currentRotation,
+      angleToBasePlanet,
+      smoothingFactor,
+    )
+    this.arrow.setRotation(this.arrow.currentRotation)
 
     // キーボード入力による宇宙船の移動
     if (this.cursors.up.isDown) {
@@ -206,7 +258,7 @@ class GameScene0 extends Phaser.Scene {
   }
 
   // 惑星を生成する関数
-  createPlanets() {
+  /*createPlanets() {
     const planetCount = 10 // 生成する惑星の数
     for (let i = 0; i < planetCount; i++) {
       // ランダムな位置を生成
@@ -264,7 +316,7 @@ class GameScene0 extends Phaser.Scene {
       //グループに追加
       this.planets.add(planet)
     }
-  }
+  }*/
 
   handleoverlap() {
     console.log('惑星に衝突しました')
@@ -335,6 +387,40 @@ class GameScene0 extends Phaser.Scene {
         star.destroy()
       }
     })
+  }
+
+  //プレイヤーの基地となる惑星を作成
+  generatebasePlanet() {
+    //マップの中心に1つだけ基地惑星を生成（惑星の画像はbaseplanet）
+    const x = 400
+    const y = 300
+    const radius = 20
+    const graphics = this.add.graphics()
+    const textureKey = `basePlanet`
+    graphics.generateTexture(textureKey, radius * 2, radius * 2)
+    graphics.destroy()
+    const basePlanet = this.physics.add.staticSprite(x, y, textureKey)
+    //サイズを変更
+    basePlanet.setScale(0.5)
+    this.planets.add(basePlanet)
+
+    //基地の位置を保存
+    this.basePlanetPosition = { x, y }
+  }
+
+  //矢印を作成
+  generateArrowTexture() {
+    const graphics = this.add.graphics()
+    graphics.fillStyle(0xffffff, 1)
+    graphics.beginPath()
+    graphics.moveTo(0, 0)
+    graphics.lineTo(50, 25)
+    graphics.lineTo(0, 50)
+    graphics.lineTo(10, 25)
+    graphics.closePath()
+    graphics.fillPath()
+    graphics.generateTexture('arrow', 50, 50)
+    graphics.destroy()
   }
 }
 
