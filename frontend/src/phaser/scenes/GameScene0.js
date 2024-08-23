@@ -1,7 +1,15 @@
 import Phaser from 'phaser'
 
-//todo: 惑星と宇宙船の衝突判定を追加
-//todo（済）: 基地となる惑星を作成する
+//todo:宇宙船と惑星が衝突した際に、惑星を獲得する
+//todo:宇宙船の状況を表す各インジケータを追加
+//todo:基地惑星の機能を追加
+//todo(done):shiftキーを押すと、宇宙船が基地惑星に向かって加速する
+//todo(done): 矢印のジタリングを解消->Tweenを使って矢印を移動させる
+//todo (done): 惑星と宇宙船の衝突判定を追加
+//todo（done）: 基地となる惑星を作成する
+//todo（done）: 矢印を表示する
+//todo（done）: 矢印を宇宙船の周りに表示する
+
 class GameScene0 extends Phaser.Scene {
   constructor() {
     // シーンのキーを設定
@@ -9,6 +17,10 @@ class GameScene0 extends Phaser.Scene {
 
     //テクスチャキーを管理するためのプロパティ
     this.planetTextureKeyIndex = 0
+
+    //矢印のプロパティ
+    this.arrowX = null
+    this.arrowY = null
   }
 
   preload() {
@@ -23,6 +35,9 @@ class GameScene0 extends Phaser.Scene {
   }
 
   create() {
+    //FPSの設定
+    this.game.loop.targetFps = 60
+
     // 背景画像をシーンに追加
     this.stars = this.add.group()
 
@@ -45,9 +60,6 @@ class GameScene0 extends Phaser.Scene {
     this.planets = this.physics.add.staticGroup()
     // シーンの初期化時に惑星を生成
     //this.createPlanets()
-
-    //宇宙船の移動速度
-    this.spaceshipSpeed = 300
 
     // 宇宙船を作成
     this.anims.create({
@@ -73,6 +85,19 @@ class GameScene0 extends Phaser.Scene {
       down: Phaser.Input.Keyboard.KeyCodes.S,
       left: Phaser.Input.Keyboard.KeyCodes.A,
       right: Phaser.Input.Keyboard.KeyCodes.D,
+      scan: Phaser.Input.Keyboard.KeyCodes.R,
+      warp: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+    })
+
+    // ダッシュ状態を管理するフラグ
+    this.isDashing = false
+
+    //マウスの入力を設定
+    this.input.mouse.disableContextMenu()
+    this.input.on('pointerdown', (pointer) => {
+      if (pointer.rightButtonDown()) {
+        this.toggleDash()
+      }
     })
 
     //基地となる惑星を生成
@@ -81,6 +106,19 @@ class GameScene0 extends Phaser.Scene {
     //矢印のテクスチャを生成
     this.generateArrowTexture()
 
+    //矢印に対して、tweenを設定する関数を作成
+    this.createArrowTween = (targetX, targetY) => {
+      return this.tweens.add({
+        targets: this.arrow,
+        x: targetX,
+        y: targetY,
+        duration: 1000,
+        ease: 'Linear',
+        repeat: 0,
+        yoyo: false,
+      })
+    }
+
     //惑星のグループを作成
     this.planets = this.physics.add.staticGroup()
 
@@ -88,10 +126,17 @@ class GameScene0 extends Phaser.Scene {
     this.physics.add.overlap(this.spaceship, this.planets, this.handleoverlap)
   }
 
+  toggleDash() {
+    this.isDashing = !this.isDashing
+  }
+
   update() {
     // ゲームロジック
     this.generateShootingStar()
     this.updateShootingStars()
+
+    //宇宙船の速度を0に設定
+    this.spaceship.setVelocity(0)
 
     // 宇宙船と基地の位置を取得
     const spaceshipPosition = this.spaceship.getCenter()
@@ -103,43 +148,73 @@ class GameScene0 extends Phaser.Scene {
       basePlanetPosition,
     )
 
-    // 矢印を表示
-    if (!this.arrow) {
-      this.arrow = this.add.image(
-        //画面中央に固定
-        this.cameras.main.scrollX + this.cameras.main.width / 2,
-        this.cameras.main.scrollY + this.cameras.main.height / 2,
-        'arrow',
-      )
-      this.arrow.setScale(0.5)
-      this.arrow.currentRotation = angleToBasePlanet
-    }
-    // 矢印の位置を宇宙船の周りの同心円上に設定
-    const radius = 100 // 矢印を表示する半径
-    const arrowX = spaceshipPosition.x + radius * Math.cos(angleToBasePlanet)
-    const arrowY = spaceshipPosition.y + radius * Math.sin(angleToBasePlanet)
-    this.arrow.setPosition(Math.round(arrowX), Math.round(arrowY))
+    //Rキーを押すと、基地への方向をスキャン
+    if (Phaser.Input.Keyboard.JustDown(this.cursors.scan)) {
+      // 矢印の位置を宇宙船の周りの同心円上に設定
+      const radius = 100 // 矢印を表示する半径
+      this.arrowX = spaceshipPosition.x + radius * Math.cos(angleToBasePlanet)
+      this.arrowY = spaceshipPosition.y + radius * Math.sin(angleToBasePlanet)
+      // 矢印を表示
+      if (!this.arrow) {
+        this.arrow = this.add.image(
+          //画面中央に固定
+          this.cameras.main.scrollX + this.cameras.main.width / 2,
+          this.cameras.main.scrollY + this.cameras.main.height / 2,
+          'arrow',
+        )
+        this.arrow.setScale(0.5)
+        this.arrow.currentRotation = angleToBasePlanet
+      }
+      //矢印のtweenを設定
+      this.createArrowTween(this.arrowX, this.arrowY)
 
-    //矢印の回転をスムーズに更新
-    const smoothingFactor = 0.1
-    this.arrow.currentRotation = Phaser.Math.Angle.RotateTo(
-      this.arrow.currentRotation,
-      angleToBasePlanet,
-      smoothingFactor,
-    )
-    this.arrow.setRotation(this.arrow.currentRotation)
+      //矢印の回転
+      this.arrow.currentRotation = Phaser.Math.Angle.RotateTo(
+        this.arrow.currentRotation,
+        angleToBasePlanet,
+      )
+      this.arrow.setRotation(this.arrow.currentRotation)
+    }
+
+    //同心円状に到達したら、矢印を消す
+    if (
+      this.arrow &&
+      Phaser.Math.Distance.Between(
+        this.arrow.x,
+        this.arrow.y,
+        this.arrowX,
+        this.arrowY,
+      ) < 1
+    ) {
+      this.arrow.destroy() // 矢印を削除
+      this.arrow = null
+    }
 
     // キーボード入力による宇宙船の移動
+    let velocityX = 0
+    let velocityY = 0
+    const NORMAL_SPEED = 300
+    const DASH_SPEED = 600
+
     if (this.cursors.up.isDown) {
-      this.spaceship.setVelocityY(this.spaceshipSpeed * -1)
+      velocityY = this.isDashing ? -DASH_SPEED : -NORMAL_SPEED
     } else if (this.cursors.down.isDown) {
-      this.spaceship.setVelocityY(this.spaceshipSpeed)
+      velocityY = this.isDashing ? DASH_SPEED : NORMAL_SPEED
     }
+
     if (this.cursors.left.isDown) {
-      this.spaceship.setVelocityX(this.spaceshipSpeed * -1)
+      velocityX = this.isDashing ? -DASH_SPEED : -NORMAL_SPEED
     } else if (this.cursors.right.isDown) {
-      this.spaceship.setVelocityX(this.spaceshipSpeed)
+      velocityX = this.isDashing ? DASH_SPEED : NORMAL_SPEED
     }
+
+    //速度を正規化する
+    if (velocityX !== 0 && velocityY !== 0) {
+      velocityX /= Math.sqrt(2)
+      velocityY /= Math.sqrt(2)
+    }
+
+    this.spaceship.setVelocity(velocityX, velocityY)
 
     let angle = 0
     //移動しているかどうかの判定
@@ -167,6 +242,29 @@ class GameScene0 extends Phaser.Scene {
     // 宇宙船の回転を設定
     this.spaceship.setRotation(angle)
 
+    //shiftキーを押すと、宇宙船が基地惑星に向かって加速する
+    if (this.cursors.warp.isDown) {
+      //基地惑星の方向を計算
+      const angleToBasePlanet = Phaser.Math.Angle.BetweenPoints(
+        spaceshipPosition,
+        basePlanetPosition,
+      )
+      //宇宙船の速度を設定
+      this.spaceship.setVelocity(
+        DASH_SPEED * Math.cos(angleToBasePlanet),
+        DASH_SPEED * Math.sin(angleToBasePlanet),
+      )
+      //宇宙船のアニメーションを再生
+      this.spaceship.anims.play('fly', true)
+
+      //宇宙船の向きに合わせて回転
+      angle = Math.atan2(
+        this.spaceship.body.velocity.x,
+        -this.spaceship.body.velocity.y,
+      )
+      this.spaceship.setRotation(angle)
+    }
+
     //キャンバスに写っている惑星の数をカウント
     let planetcount = 0
     const canvasWidth = this.cameras.main.width
@@ -179,7 +277,6 @@ class GameScene0 extends Phaser.Scene {
         planet.y < this.cameras.main.scrollY + canvasHeight + 100
       ) {
         planetcount++
-        //console.log("惑星がカメラ内にあります");
       }
     })
 
