@@ -1,8 +1,8 @@
 import Phaser from 'phaser'
 
 //todo:宇宙船と惑星が衝突した際に、惑星を獲得する
-//todo:宇宙船の状況を表す各インジケータを追加
 //todo:基地惑星の機能を追加
+//todo(done):宇宙船の状況を表す各インジケータを追加
 //todo(done):shiftキーを押すと、宇宙船が基地惑星に向かって加速する
 //todo(done): 矢印のジタリングを解消->Tweenを使って矢印を移動させる
 //todo (done): 惑星と宇宙船の衝突判定を追加
@@ -21,6 +21,9 @@ class GameScene0 extends Phaser.Scene {
     //矢印のプロパティ
     this.arrowX = null
     this.arrowY = null
+
+    //宇宙船の各インジケータ
+    this.gotplanets = 0
   }
 
   preload() {
@@ -119,11 +122,32 @@ class GameScene0 extends Phaser.Scene {
       })
     }
 
+    // Got Planetsのインジケーターを作成
+    this.planetIndicator = this.add.text(
+      10,
+      10,
+      `GOT PLANETS: ${this.gotplanets}`,
+      {
+        fontSize: '32px',
+        fill: '#ffffff',
+      },
+    )
+
+    //カメラの影響を受けないようにする
+    this.planetIndicator.setScrollFactor(0)
+
     //惑星のグループを作成
     this.planets = this.physics.add.staticGroup()
 
     //惑星と宇宙船のオーバーラップを検出
     this.physics.add.overlap(this.spaceship, this.planets, this.handleoverlap)
+
+    //基地と宇宙船のオーバーラップを検出
+    this.physics.add.overlap(
+      this.spaceship,
+      this.basePlanet,
+      this.returntoBasePlanet,
+    )
   }
 
   toggleDash() {
@@ -137,6 +161,9 @@ class GameScene0 extends Phaser.Scene {
 
     //宇宙船の速度を0に設定
     this.spaceship.setVelocity(0)
+
+    //宇宙船のインジケーターを更新
+    this.planetIndicator.setText(`GOT PLANETS: ${this.gotplanets}`)
 
     // 宇宙船と基地の位置を取得
     const spaceshipPosition = this.spaceship.getCenter()
@@ -419,6 +446,13 @@ class GameScene0 extends Phaser.Scene {
     console.log('惑星に衝突しました')
   }
 
+  returntoBasePlanet() {
+    //基地に戻るかどうかの選択肢を表示
+    console.log('基地に戻りますか？')
+    //基地に戻るボタンを表示
+    //基地に戻るボタンをクリックすると、基地に戻る
+  }
+
   generateSpaceBackground() {
     const width = 800
     const height = 600
@@ -496,10 +530,9 @@ class GameScene0 extends Phaser.Scene {
     const textureKey = `basePlanet`
     graphics.generateTexture(textureKey, radius * 2, radius * 2)
     graphics.destroy()
-    const basePlanet = this.physics.add.staticSprite(x, y, textureKey)
+    this.basePlanet = this.physics.add.staticSprite(x, y, textureKey)
     //サイズを変更
-    basePlanet.setScale(0.5)
-    this.planets.add(basePlanet)
+    this.basePlanet.setScale(0.5)
 
     //基地の位置を保存
     this.basePlanetPosition = { x, y }
