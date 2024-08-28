@@ -1,14 +1,15 @@
 import Phaser from 'phaser'
 
-//todo:宇宙船と惑星が衝突した際に、惑星を獲得する
 //todo:基地惑星の機能を追加
+//todo:惑星の当たり判定を削除する（隠し機能として実装する？カウンタ側で調整する？）
+
 //todo(done):宇宙船の状況を表す各インジケータを追加
 //todo(done):shiftキーを押すと、宇宙船が基地惑星に向かって加速する
 //todo(done): 矢印のジタリングを解消->Tweenを使って矢印を移動させる
 //todo (done): 惑星と宇宙船の衝突判定を追加
 //todo（done）: 基地となる惑星を作成する
 //todo（done）: 矢印を表示する
-//todo（done）: 矢印を宇宙船の周りに表示する
+//todo（done）: 矢印を宇宙船の周りに表示する//todo(done):宇宙船と惑星が衝突した際に、惑星を獲得する
 
 class GameScene0 extends Phaser.Scene {
   constructor() {
@@ -79,6 +80,10 @@ class GameScene0 extends Phaser.Scene {
     //宇宙船の大きさを変更
     this.spaceship.setScale(0.5)
 
+    //宇宙船の当たり判定をリサイズ
+    this.spaceship.setCircle(240)
+    this.spaceship.setOffset(115, 100)
+
     //カメラが宇宙船を追跡するように設定
     this.cameras.main.startFollow(this.spaceship)
 
@@ -140,7 +145,13 @@ class GameScene0 extends Phaser.Scene {
     this.planets = this.physics.add.staticGroup()
 
     //惑星と宇宙船のオーバーラップを検出
-    this.physics.add.overlap(this.spaceship, this.planets, this.handleoverlap)
+    this.physics.add.overlap(
+      this.spaceship,
+      this.planets,
+      this.handleoverlap,
+      null,
+      this,
+    )
 
     //基地と宇宙船のオーバーラップを検出
     this.physics.add.overlap(
@@ -308,7 +319,7 @@ class GameScene0 extends Phaser.Scene {
     })
 
     //console.log(planetcount);
-    //カメラ内に移っている惑星の数が少ない場合、新たに惑星を生成
+    //カメラ内に映っている惑星の数が少ない場合、新たに惑星を生成
     if (planetcount < 10) {
       this.additionalPlanet()
     }
@@ -353,15 +364,18 @@ class GameScene0 extends Phaser.Scene {
     // 惑星を作成し、物理エンジンに追加
     const x = Math.random() < 0.5 ? x1 : x2
     const y = Math.random() < 0.5 ? y1 : y2
-    const planet = this.physics.add.staticSprite(x, y, textureKey)
+    this.planet = this.physics.add.staticSprite(x, y, textureKey)
+
+    //惑星の当たり判定をリサイズ
+    this.planet.setCircle(radius)
 
     // 惑星オーバーラップを検出
     //this.physics.add.overlap(this.spaceship, planet, this.handleoverlap, null, this);
 
     // 惑星同士が重なっていたり、包含していたら、惑星を削除
     this.planets.getChildren().forEach((planet2) => {
-      if (planet !== planet2) {
-        const bounds1 = planet.getBounds()
+      if (this.planet !== planet2) {
+        const bounds1 = this.planet.getBounds()
         const bounds2 = planet2.getBounds()
 
         if (
@@ -369,16 +383,17 @@ class GameScene0 extends Phaser.Scene {
           Phaser.Geom.Rectangle.ContainsRect(bounds1, bounds2) ||
           Phaser.Geom.Rectangle.ContainsRect(bounds2, bounds1)
         ) {
+          this.planet.destroy()
+          console.log('remove planet')
           //テクスチャキーを取得
-          const textureKey = planet.texture.key
-          planet.destroy()
+          const textureKey = this.planet.texture.key
           //テクスチャも削除
           this.textures.removeKey(textureKey)
         }
       }
     })
     //グループに追加
-    this.planets.add(planet)
+    this.planets.add(this.planet)
   }
 
   // 惑星を生成する関数
@@ -442,13 +457,18 @@ class GameScene0 extends Phaser.Scene {
     }
   }*/
 
-  handleoverlap() {
-    console.log('惑星に衝突しました')
+  handleoverlap(spaceship, overlapplanet) {
+    //グループからの削除
+    this.planets.remove(overlapplanet, true, true)
+    //宇宙船と惑星が衝突した際の処理
+    overlapplanet.destroy()
+    //獲得惑星数をインクリメント
+    this.gotplanets++
   }
 
   returntoBasePlanet() {
     //基地に戻るかどうかの選択肢を表示
-    console.log('基地に戻りますか？')
+    //console.log('基地に戻りますか？')
     //基地に戻るボタンを表示
     //基地に戻るボタンをクリックすると、基地に戻る
   }
@@ -533,6 +553,10 @@ class GameScene0 extends Phaser.Scene {
     this.basePlanet = this.physics.add.staticSprite(x, y, textureKey)
     //サイズを変更
     this.basePlanet.setScale(0.5)
+
+    //基地の当たり判定をリサイズ
+    this.basePlanet.setCircle(173)
+    this.basePlanet.setOffset(195, 185)
 
     //基地の位置を保存
     this.basePlanetPosition = { x, y }

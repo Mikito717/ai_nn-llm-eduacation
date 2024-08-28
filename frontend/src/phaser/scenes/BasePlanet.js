@@ -1,5 +1,8 @@
 import Phaser from 'phaser'
 
+//todo:UI作成
+//todo:使用AIを羅列する
+//todo:AIを選択すると、そのAIの説明が表示される
 class BasePlanet extends Phaser.Scene {
   constructor() {
     super({ key: 'BasePlanet' })
