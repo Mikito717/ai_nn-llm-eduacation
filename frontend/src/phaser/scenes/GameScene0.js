@@ -372,6 +372,7 @@ class GameScene0 extends Phaser.Scene {
     // 惑星オーバーラップを検出
     //this.physics.add.overlap(this.spaceship, planet, this.handleoverlap, null, this);
 
+    let overlap = false
     // 惑星同士が重なっていたり、包含していたら、惑星を削除
     this.planets.getChildren().forEach((planet2) => {
       if (this.planet !== planet2) {
@@ -381,8 +382,12 @@ class GameScene0 extends Phaser.Scene {
         if (
           Phaser.Geom.Intersects.RectangleToRectangle(bounds1, bounds2) ||
           Phaser.Geom.Rectangle.ContainsRect(bounds1, bounds2) ||
-          Phaser.Geom.Rectangle.ContainsRect(bounds2, bounds1)
+          Phaser.Geom.Rectangle.ContainsRect(bounds2, bounds1) ||
+          //baseplanetとの重なりを防ぐ
+          Phaser.Math.Distance.Between(this.planet.x, this.planet.y, 400, 300) <
+            radius + 173
         ) {
+          overlap = true
           this.planet.destroy()
           console.log('remove planet')
           //テクスチャキーを取得
@@ -394,6 +399,9 @@ class GameScene0 extends Phaser.Scene {
     })
     //グループに追加
     this.planets.add(this.planet)
+    if (overlap) {
+      this.planets.remove(this.planet, true, true)
+    }
   }
 
   // 惑星を生成する関数

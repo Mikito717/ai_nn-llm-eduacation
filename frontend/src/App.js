@@ -1,53 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import Home from './components/Home';
-import Tutorial from './components/Tutorial';
-import Navigation from './components/Navigation';
-import PlayerNameInput from './components/PlayerNameInput';
-import GameComponent from './components/GameComponent';
-import Mainmenu from './components/Mainmenu';
+import React, { useState, useEffect } from 'react'
+import Phaser from 'phaser'
+import Home from './components/Home'
+import phaserConfig from './phaser/config/phaserconfig' // 正しいパスに修正
 
 function App() {
-  // ローカルストレージから初期ページ状態を読み込む
-  /*const getInitialPage = () => {
-    const savedPage = localStorage.getItem('currentPage');
-    return savedPage || 'home'; // ローカルストレージに保存されたページがなければ 'home' を返す
-  };
-  */
-  //const [page, setPage] = useState(getInitialPage);
-  const [page, setPage] = useState('home');
-  /*
-  // ページ状態が変更されるたびにローカルストレージに保存
-  useEffect(() => {
-    localStorage.setItem('currentPage', page);
-  }, [page]);
-  */
+  const [phaserGame, setPhaserGame] = useState(null)
+  const [showGame, setShowGame] = useState(false)
 
-  const renderPage = () => {
-    switch (page) {
-      //初期画面
-      case 'home':
-        return <Home setPage={setPage} />;
-      //名前入力画面
-      case 'playerNameInput':
-        return <PlayerNameInput setPage={setPage} />;
-      //チュートリアル画面
-      case 'tutorial':
-        return <Tutorial setPage={setPage} />;
-      case 'game':
-        return <GameComponent />;
-      case 'mainmenu':
-        return <Mainmenu setPage={setPage}/>;
-      default:
-        return <Home setPage={setPage} />;
+  /* useEffect(() => {
+    if (phaserGame) {
+      if (showGame) {
+        phaserGame.scene.start('MainMenu') // ゲームが初期化済みであれば、シーンを開始
+      } else {
+        phaserGame.destroy(true) // ゲームインスタンスを破棄して表示エリアを隠す
+        setPhaserGame(null)
+      }
     }
-  };
+  }, [phaserGame, showGame])*/
+
+  const startGame = () => {
+    if (!phaserGame) {
+      const game = new Phaser.Game(phaserConfig)
+      setPhaserGame(game)
+    }
+    setShowGame(true) // ゲーム表示を切り替え
+  }
 
   return (
     <div className="App">
-      <Navigation setPage={setPage} />
-      {renderPage()}
+      {showGame ? <div id="phaser-game"></div> : <Home startGame={startGame} />}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
