@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import AIDescription from './AIDescription'
 
 //todo:UI作成
 //todo:使用AIを羅列する
@@ -6,29 +7,57 @@ import Phaser from 'phaser'
 class BasePlanet extends Phaser.Scene {
   constructor() {
     super({ key: 'BasePlanet' })
+    //どのAIが選択されているか
+    this.selectedAI = null
   }
 
   preload() {
-    // ここにアセットの読み込み処理を追加
-    this.load.image('basePlanet', 'assets/baseplanet.png')
+    //basestation.jpgを読み込む
+    this.load.image('base', 'assets/basestation.jpg')
   }
 
   create() {
-    // ここにシーンの初期化処理を追加
-    const x = 400
-    const y = 300
-    const radius = 20
-    const graphics = this.add.graphics()
-    const textureKey = 'basePlanet'
-    graphics.generateTexture(textureKey, radius * 2, radius * 2)
-    graphics.destroy()
-    const basePlanet = this.physics.add.staticSprite(x, y, textureKey)
-    basePlanet.setScale(0.5)
-    this.planets = this.physics.add.staticGroup()
-    this.planets.add(basePlanet)
+    // basestation.jpgを表示
+    this.add.image(400, 300, 'base')
 
-    // 基地の位置を保存
-    this.basePlanetPosition = { x, y }
+    // AIの選択ボタンを表示（6個）
+    const buttonNames = ['AI1', 'AI2', 'AI3', 'AI4', 'AI5', 'AI6']
+    const rows = 3
+    const cols = 2
+    const buttonWidth = 300
+    const buttonHeight = 100
+    const startX = 200
+    const startY = 100
+
+    buttonNames.forEach((name, index) => {
+      const x = startX + (index % cols) * buttonWidth
+      const y = startY + Math.floor(index / cols) * buttonHeight
+
+      const button = this.add
+        .text(x, y, name, {
+          fontSize: '48px',
+          fill: '#fff',
+          backgroundColor: '#000',
+          padding: { x: 10, y: 5 },
+        })
+        .setInteractive()
+        .on('pointerdown', () => this.showAIDescription(name))
+        .on('pointerover', () => {
+          button.setStyle({ fill: '#ff0', backgroundColor: '#333' })
+        })
+        .on('pointerout', () => {
+          button.setStyle({ fill: '#fff', backgroundColor: '#000' })
+        })
+    })
+
+    // AIを選択すると、そのAIの説明が表示される
+    // AIの説明を表示
+  }
+
+  showAIDescription(name) {
+    //どのAIが選択されているか
+    this.selectedAI = name
+    this.scene.launch('AIDescription', { selectedAI: this.selectedAI })
   }
 
   update() {

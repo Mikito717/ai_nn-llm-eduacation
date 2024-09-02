@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import Pause from './Pause'
 
 //todo:基地惑星の機能を追加
 //todo:惑星の当たり判定を削除する（隠し機能として実装する？カウンタ側で調整する？）
@@ -25,6 +26,9 @@ class GameScene0 extends Phaser.Scene {
 
     //宇宙船の各インジケータ
     this.gotplanets = 0
+
+    //ポーズしているかどうかのフラグ
+    this.isPaused = false
   }
 
   preload() {
@@ -95,6 +99,14 @@ class GameScene0 extends Phaser.Scene {
       right: Phaser.Input.Keyboard.KeyCodes.D,
       scan: Phaser.Input.Keyboard.KeyCodes.R,
       warp: Phaser.Input.Keyboard.KeyCodes.SHIFT,
+      pause: Phaser.Input.Keyboard.KeyCodes.TAB,
+    })
+
+    // ポーズ画面を表示(TAB)
+    this.input.keyboard.on('keydown-TAB', () => {
+      this.scene.launch('Pause') // ポーズシーンを表示
+      this.scene.pause() // 現在のシーンを一時停止
+      this.scene.get('Pause').data.set('pausedSceneKey', this.scene.key) // 一時停止したシーンのキーをセット
     })
 
     // ダッシュ状態を管理するフラグ
@@ -163,6 +175,28 @@ class GameScene0 extends Phaser.Scene {
 
   toggleDash() {
     this.isDashing = !this.isDashing
+  }
+
+  togglePause() {
+    if (this.isPaused) {
+      this.scene.resume(this.scene.key)
+      this.isPaused = false
+      this.pauseText.setVisible(false)
+    } else {
+      this.scene.pause(this.scene.key)
+      this.isPaused = true
+      this.pauseText = this.add
+        .text(
+          this.cameras.main.scrollX + this.cameras.main.width / 2,
+          this.cameras.main.scrollY + this.cameras.main.height / 2,
+          'PAUSE',
+          {
+            fontSize: '32px',
+            fill: '#ffffff',
+          },
+        )
+        .setOrigin(0.5)
+    }
   }
 
   update() {

@@ -65,7 +65,7 @@ class PlayerNameInput extends Phaser.Scene {
 
   handleSubmit() {
     //if (this.name !== '') {
-    alert(`プレイヤーの名前: ${this.name}`)
+    //alert(`プレイヤーの名前: ${this.name}`)
     // 名前をサーバーに送信したり、他の処理を行うことができます
     this.scene.start('MainMenu')
     //} else {
