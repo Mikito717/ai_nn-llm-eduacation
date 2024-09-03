@@ -1,9 +1,8 @@
 import Phaser from 'phaser'
 import Pause from './Pause'
 
-//todo:基地惑星の機能を追加
-//todo:惑星の当たり判定を削除する（隠し機能として実装する？カウンタ側で調整する？）
-
+//todo(done):基地惑星の機能を追加
+//todo(done):惑星の当たり判定を削除する（隠し機能として実装する？カウンタ側で調整する？）
 //todo(done):宇宙船の状況を表す各インジケータを追加
 //todo(done):shiftキーを押すと、宇宙船が基地惑星に向かって加速する
 //todo(done): 矢印のジタリングを解消->Tweenを使って矢印を移動させる
@@ -511,6 +510,7 @@ class GameScene0 extends Phaser.Scene {
   returntoBasePlanet() {
     //基地に戻るかどうかの選択肢を表示
     //console.log('基地に戻りますか？')
+    this.scene.launch('ReturntoBasePlanet')
     //基地に戻るボタンを表示
     //基地に戻るボタンをクリックすると、基地に戻る
   }
