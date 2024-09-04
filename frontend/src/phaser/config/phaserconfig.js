@@ -5,6 +5,8 @@ import MainMenu from '../scenes/MainMenu'
 import PlayerNameInput from '../scenes/PlayerNameInput'
 import Pause from '../scenes/Pause'
 import AIDescription from '../scenes/AIDescription'
+import ReturntoBasePlanet from '../scenes/ReturntoBasePlanet'
+import AI1 from '../scenes/AI1'
 
 const config = {
   type: Phaser.AUTO,
@@ -24,6 +26,8 @@ const config = {
     BasePlanet,
     Pause,
     AIDescription,
+    ReturntoBasePlanet,
+    AI1,
   ],
 }
 

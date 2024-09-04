@@ -1,25 +1,28 @@
 import Phaser from 'phaser'
 
-class AIDescription extends Phaser.Scene {
+class AI1 extends Phaser.Scene {
   constructor() {
-    super({ key: 'AIDescription' })
+    super({ key: 'AI1' }) //ここでは、K-NNを選択した場合の処理を記述
   }
-
   preload() {}
-
   create() {
-    //どのAIが選択されているか
-    this.selectedAI = this.scene.settings.data.selectedAI
-    //画面の大きさを取得
+    //背景の描画
     const width = this.cameras.main.width
     const height = this.cameras.main.height
-    //オーバーレイで表示
     this.add.graphics().fillStyle(0x000000, 0.7).fillRect(0, 0, width, height)
-    //選択されたAIの説明を表示
-    this.add.text(200, 100, this.selectedAI, {
-      fontSize: '48px',
-      fill: '#fff',
-    })
+    //flaskでPythonのAIを呼び出す処理を記述
+    //サーバーにリクエストを送信
+    fetch('http://localhost:5000/') //K-NNに該当するURLを記述
+      .then((response) => {
+        return response.json()
+      })
+      .then((data) => {
+        //AIの結果を表示
+        this.add.text(200, 100, data, {
+          fontSize: '48px',
+          fill: '#fff',
+        })
+      })
     //戻るボタンを表示
     const backButton = this.add
       .text(200, 500, '戻る', {
@@ -37,10 +40,7 @@ class AIDescription extends Phaser.Scene {
         backButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
       })
   }
-
-  update(time, delta) {
-    // Game logic goes here
-  }
+  update(time, delta) {}
 }
 
-export default AIDescription
+export default AI1
