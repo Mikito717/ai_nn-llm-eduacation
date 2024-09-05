@@ -11,18 +11,33 @@ class AI1 extends Phaser.Scene {
     const height = this.cameras.main.height
     this.add.graphics().fillStyle(0x000000, 0.7).fillRect(0, 0, width, height)
     //flaskでPythonのAIを呼び出す処理を記述
-    //サーバーにリクエストを送信
-    fetch('http://localhost:5000/') //K-NNに該当するURLを記述
-      .then((response) => {
-        return response.json()
-      })
+    //サーバーにデータを渡し、リクエストを送信
+    fetch('http://localhost:5000/run_knn', {
+      //URLあとで変更
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        //データを送信
+        data: 'collected data', //ここにデータを入れる
+      }),
+    })
+      .then((res) => res.json())
       .then((data) => {
         //AIの結果を表示
-        this.add.text(200, 100, data, {
-          fontSize: '48px',
-          fill: '#fff',
-        })
+        this.add
+          .text(400, 300, `AI1: ${data.message}`, {
+            fontSize: '32px',
+            fill: '#fff',
+            wordWrap: { width: 600 },
+          })
+          .setOrigin(0.5)
       })
+      .catch((error) => {
+        console.error('Error:', error)
+      })
+
     //戻るボタンを表示
     const backButton = this.add
       .text(200, 500, '戻る', {

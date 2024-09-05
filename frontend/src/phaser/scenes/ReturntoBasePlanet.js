@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import BasePlanet from './BasePlanet'
 
 class ReturntoBasePlanet extends Phaser.Scene {
   constructor() {
@@ -29,9 +28,12 @@ class ReturntoBasePlanet extends Phaser.Scene {
     continueButton.setInteractive()
     continueButton.on('pointerdown', () => {
       this.scene.stop('ReturntoBasePlanet')
+      this.scene.resume('GameScene0')
     })
   }
   update(time, delta) {
     // Game logic goes here
   }
 }
+
+export default ReturntoBasePlanet

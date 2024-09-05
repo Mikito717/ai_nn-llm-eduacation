@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import Pause from './Pause'
 
 //todo(done):基地惑星の機能を追加
 //todo(done):惑星の当たり判定を削除する（隠し機能として実装する？カウンタ側で調整する？）
@@ -164,11 +163,16 @@ class GameScene0 extends Phaser.Scene {
       this,
     )
 
+    //オーバーラップフラグ
+    this.overlapBase = true
+
     //基地と宇宙船のオーバーラップを検出
     this.physics.add.overlap(
       this.spaceship,
       this.basePlanet,
       this.returntoBasePlanet,
+      null,
+      this,
     )
   }
 
@@ -356,6 +360,19 @@ class GameScene0 extends Phaser.Scene {
     if (planetcount < 10) {
       this.additionalPlanet()
     }
+
+    //宇宙船と基地惑星の距離を計算
+    const distance = Phaser.Math.Distance.Between(
+      spaceshipPosition.x,
+      spaceshipPosition.y,
+      basePlanetPosition.x,
+      basePlanetPosition.y,
+    )
+
+    //基地からある程度離したら、オーバーラップフラグをfalseにする
+    if (distance > 300) {
+      this.overlapBase = false
+    }
   }
   // 惑星を追加する関数(createPlanets()と同様のアルゴリズムだが、カメラ周辺の描画範囲外に生成する）
   additionalPlanet() {
@@ -507,10 +524,14 @@ class GameScene0 extends Phaser.Scene {
     this.gotplanets++
   }
 
-  returntoBasePlanet() {
+  returntoBasePlanet = () => {
+    //arrow関数が重要
     //基地に戻るかどうかの選択肢を表示
     //console.log('基地に戻りますか？')
+    if (this.overlapBase) return
+    this.scene.pause()
     this.scene.launch('ReturntoBasePlanet')
+    this.overlapBase = true
     //基地に戻るボタンを表示
     //基地に戻るボタンをクリックすると、基地に戻る
   }

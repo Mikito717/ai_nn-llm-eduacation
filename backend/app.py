@@ -7,9 +7,14 @@ CORS(app)
 
 @app.route('/run_knn', methods=['POST'])
 def run_knn():
+    print("start run_knn")
     data = request.json
-    k_value = data['k']
-    distance_metric = data['distance_metric']
+    #k_value = data['k']#k>=100
+    #distance_metric = data['distance_metric']
+
+    #for debug
+    k_value = 100
+    distance_metric = "euclidean"
     
     #try:
     # ここでK-NNの処理を行います

@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import AIDescription from './AIDescription'
 
 //todo:UI作成
 //todo:使用AIを羅列する
@@ -22,7 +21,6 @@ class BasePlanet extends Phaser.Scene {
 
     // AIの選択ボタンを表示（6個）
     const buttonNames = ['AI1', 'AI2', 'AI3', 'AI4', 'AI5', 'AI6']
-    const rows = 3
     const cols = 2
     const buttonWidth = 300
     const buttonHeight = 100
@@ -52,6 +50,22 @@ class BasePlanet extends Phaser.Scene {
 
     // AIを選択すると、そのAIの説明が表示される
     // AIの説明を表示
+    //MainMenuへ戻るボタンを表示
+    const backButton = this.add
+      .text(200, 500, 'MainMenu', {
+        fontSize: '48px',
+        fill: '#fff',
+        backgroundColor: '#000',
+        padding: { x: 10, y: 5 },
+      })
+      .setInteractive()
+      .on('pointerdown', () => this.scene.start('MainMenu'))
+      .on('pointerover', () => {
+        backButton.setStyle({ fill: '#ff0', backgroundColor: '#333' })
+      })
+      .on('pointerout', () => {
+        backButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
+      })
   }
 
   showAIDescription(name) {
