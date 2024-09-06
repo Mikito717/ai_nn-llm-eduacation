@@ -37,5 +37,16 @@ def run_knn():
     
     return jsonify(result)
 
+def run_svm():
+    print("start run_svm")
+    data =request.json
+
+    #ここでSVMの処理を行います
+    
+    result = {
+        'message': 'SVM - 処理が完了しました。'
+    }
+    return jsonify(result)
+
 if __name__ == '__main__':
     app.run(debug=True)

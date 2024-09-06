@@ -13,7 +13,6 @@ class AI1 extends Phaser.Scene {
     //flaskでPythonのAIを呼び出す処理を記述
     //サーバーにデータを渡し、リクエストを送信
     fetch('http://localhost:5000/run_knn', {
-      //URLあとで変更
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
