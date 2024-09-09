@@ -16,7 +16,6 @@ def run_knn():
     k_value = 100
     distance_metric = "euclidean"
     
-    #try:
     # ここでK-NNの処理を行います
     new_image_path = '.\\PetImages\\test_cat.jpg'
     predict=k_nn.k_nn_learning(k_value, distance_metric, new_image_path)
@@ -29,11 +28,6 @@ def run_knn():
     result = {
         'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が完了しました。あなたの画像は{predict[0]}点で{predict[1]}です'
     }
-    """except:
-        result = {
-        'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が失敗しました。'
-        }
-    """
     
     return jsonify(result)
 
