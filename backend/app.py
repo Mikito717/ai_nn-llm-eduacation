@@ -42,5 +42,16 @@ def run_svm():
     }
     return jsonify(result)
 
+def run_kmeans():
+    print("start run_kmeans")
+    data = request.json
+
+    #ここでK-meansの処理を行います
+
+    result = {
+        'message': 'K-means - 処理が完了しました。'
+    }
+    return jsonify(result)
+
 if __name__ == '__main__':
     app.run(debug=True)
