@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 class KMeans:
 	def __init__(self, n_clusters=3, max_iter=300, tol=1e-4):
@@ -34,3 +35,28 @@ class KMeans:
 
 	def private_method(self):
 		pass
+
+	#kmeansで行ったクラスタリングを可視化するための関数
+	def plot_clusters(X, labels, centroids):
+		plt.scatter(X[:, 0], X[:, 1], c=labels, cmap='viridis')
+		plt.scatter(centroids[:, 0], centroids[:, 1], c='red', s=100, alpha=0.5)
+		
+		# セントロイドに名前を表示
+		for i, centroid in enumerate(centroids):
+			plt.text(centroid[0], centroid[1], f'Centroid {i}', fontsize=12, ha='right')
+		
+		plt.show()
+
+#データの生成
+np.random.seed(0)
+X = np.random.randn(100, 2)
+X[:50] += 3
+X[50:80] -= 4
+X[80:] += 5
+
+#kmeansの実行
+kmeans = KMeans(n_clusters=3)
+kmeans.fit(X)
+labels = kmeans.predict(X)
+centroids = kmeans.centroids
+KMeans.plot_clusters(X, labels, centroids)

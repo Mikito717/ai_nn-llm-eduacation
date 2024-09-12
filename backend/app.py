@@ -53,5 +53,60 @@ def run_kmeans():
     }
     return jsonify(result)
 
+def run_pca():
+    print("start run_pca")
+    data = request.json
+
+    #ここでPCAの処理を行います
+
+    result = {
+        'message': 'PCA - 処理が完了しました。'
+    }
+    return jsonify(result)
+
+def run_randomforest():
+    print("start run_randomforest")
+    data = request.json
+
+    #ここでRandomForestの処理を行います
+
+    result = {
+        'message': 'RandomForest - 処理が完了しました。'
+    }
+    return jsonify(result)
+
+def run_RNN():
+    print("start run_RNN")
+    data = request.json
+
+    #ここでRNNの処理を行います
+
+    result = {
+        'message': 'RNN - 処理が完了しました。'
+    }
+    return jsonify(result)
+
+def run_CNN():
+    print("start run_CNN")
+    data = request.json
+
+    #ここでCNNの処理を行います
+
+    result = {
+        'message': 'CNN - 処理が完了しました。'
+    }
+    return jsonify(result)
+
+def run_LLM():
+    print("start run_LLM")
+    data = request.json
+
+    #ここでLLMの処理を行います
+
+    result = {
+        'message': 'LLM - 処理が完了しました。'
+    }
+    return jsonify(result)
+
 if __name__ == '__main__':
     app.run(debug=True)
