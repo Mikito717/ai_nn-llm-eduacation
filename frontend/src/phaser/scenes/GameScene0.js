@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 
+//todo:惑星の獲得数を渡す
 //todo(done):基地惑星の機能を追加
 //todo(done):惑星の当たり判定を削除する（隠し機能として実装する？カウンタ側で調整する？）
 //todo(done):宇宙船の状況を表す各インジケータを追加
@@ -23,7 +24,11 @@ class GameScene0 extends Phaser.Scene {
     this.arrowY = null
 
     //宇宙船の各インジケータ
-    this.gotplanets = 0
+    this.gotplanets_gold = 0
+    this.gotplanets_purple = 0
+    this.gotplanets_blue = 0
+    this.gotplanets =
+      this.gotplanets_gold + this.gotplanets_purple + this.gotplanets_blue
 
     //ポーズしているかどうかのフラグ
     this.isPaused = false
@@ -98,6 +103,7 @@ class GameScene0 extends Phaser.Scene {
       scan: Phaser.Input.Keyboard.KeyCodes.R,
       warp: Phaser.Input.Keyboard.KeyCodes.SHIFT,
       pause: Phaser.Input.Keyboard.KeyCodes.TAB,
+      pointdetail: Phaser.Input.Keyboard.KeyCodes.I,
     })
 
     // ポーズ画面を表示(TAB)
@@ -174,6 +180,24 @@ class GameScene0 extends Phaser.Scene {
       null,
       this,
     )
+
+    //表示するかどうかのフラグ
+    this.isPointDetail = false
+
+    //獲得した惑星の内訳画面を表示(Iを押している間オーバーレイ表示)
+    //詳細画面を作成(説明文の色を取得惑星の色と同じにする)
+    this.pointDetail = this.add.text(
+      400,
+      300,
+      `GOT PLANETS: \nGOLD: ${this.gotplanets_gold} \nPURPLE: ${this.gotplanets_purple} \nBLUE: ${this.gotplanets_blue}`,
+      {
+        fontSize: '32px',
+        fill: '#ffffff',
+      },
+    )
+
+    //カメラの影響を受けないようにする
+    this.pointDetail.setScrollFactor(0)
   }
 
   toggleDash() {
@@ -211,7 +235,12 @@ class GameScene0 extends Phaser.Scene {
     this.spaceship.setVelocity(0)
 
     //宇宙船のインジケーターを更新
-    this.planetIndicator.setText(`GOT PLANETS: ${this.gotplanets}`)
+    this.pointDetail.setText(
+      `GOT PLANETS: \nGOLD: ${this.gotplanets_gold} \nPURPLE: ${this.gotplanets_purple} \nBLUE: ${this.gotplanets_blue}`,
+    )
+    this.planetIndicator.setText(
+      `GOT PLANETS: ${this.gotplanets_gold + this.gotplanets_purple + this.gotplanets_blue}`,
+    )
 
     // 宇宙船と基地の位置を取得
     const spaceshipPosition = this.spaceship.getCenter()
@@ -373,6 +402,15 @@ class GameScene0 extends Phaser.Scene {
     if (distance > 300) {
       this.overlapBase = false
     }
+
+    //Iキーが押されている間、獲得惑星の内訳を表示
+    if (this.cursors.pointdetail.isDown) {
+      this.isPointDetail = true
+      this.pointDetail.setVisible(true)
+    } else {
+      this.isPointDetail = false
+      this.pointDetail.setVisible(false)
+    }
   }
   // 惑星を追加する関数(createPlanets()と同様のアルゴリズムだが、カメラ周辺の描画範囲外に生成する）
   additionalPlanet() {
@@ -401,13 +439,31 @@ class GameScene0 extends Phaser.Scene {
     const graphics = this.add.graphics()
     //グラフィックスオブジェクトをクリア
     graphics.clear()
-    // 色と透明度を設定(黒、白以外のランダムな色)
-    graphics.fillStyle(Phaser.Display.Color.RandomRGB().color, 1)
+    //ランダム要素を作成するための乱数を生成（3つの離散値を取る）
+    const random = Math.random()
+    if (random < 0.1) {
+      //金色
+      graphics.fillStyle(0xffd700, 1)
+    } else if (random < 0.4) {
+      //紫色
+      graphics.fillStyle(0x800080, 1)
+    } else {
+      //青色
+      graphics.fillStyle(0x0000ff, 1)
+    }
     graphics.fillCircle(radius, radius, radius) // ランダムな半径で円を描画
 
     // グラフィックをテクスチャに変換
     this.planetTextureKeyIndex++ // テクスチャキーのインデックスをインクリメント
-    const textureKey = `planet${this.planetTextureKeyIndex}` // テクスチャキーを生成
+    // テクスチャキーを生成(惑星の色によって名前を変更)
+    let textureKey = ''
+    if (random < 0.1) {
+      textureKey = `planet${this.planetTextureKeyIndex}_gold`
+    } else if (random < 0.4) {
+      textureKey = `planet${this.planetTextureKeyIndex}_purple`
+    } else {
+      textureKey = `planet${this.planetTextureKeyIndex}_blue`
+    }
     graphics.generateTexture(textureKey, radius * 2, radius * 2)
     graphics.destroy() // グラフィックオブジェクトを破棄
 
@@ -418,9 +474,6 @@ class GameScene0 extends Phaser.Scene {
 
     //惑星の当たり判定をリサイズ
     this.planet.setCircle(radius)
-
-    // 惑星オーバーラップを検出
-    //this.physics.add.overlap(this.spaceship, planet, this.handleoverlap, null, this);
 
     let overlap = false
     // 惑星同士が重なっていたり、包含していたら、惑星を削除
@@ -454,86 +507,36 @@ class GameScene0 extends Phaser.Scene {
     }
   }
 
-  // 惑星を生成する関数
-  /*createPlanets() {
-    const planetCount = 10 // 生成する惑星の数
-    for (let i = 0; i < planetCount; i++) {
-      // ランダムな位置を生成
-      const x = Phaser.Math.Between(
-        this.cameras.main.scrollX,
-        this.cameras.main.scrollX + this.cameras.main.width,
-      )
-      const y = Phaser.Math.Between(
-        this.cameras.main.scrollY,
-        this.cameras.main.scrollY + this.cameras.main.height,
-      )
-
-      // ランダムな半径を生成 (例: 10から30の間)
-      const radius = Phaser.Math.Between(10, 30)
-
-      // グラフィックオブジェクトを作成
-      const graphics = this.add.graphics()
-      //グラフィックスオブジェクトをクリア
-      graphics.clear()
-      // 色と透明度を設定(黒、白以外のランダムな色)
-      graphics.fillStyle(Phaser.Display.Color.RandomRGB().color, 1)
-      graphics.fillCircle(radius, radius, radius) // ランダムな半径で円を描画
-
-      // グラフィックをテクスチャに変換
-      this.planetTextureKeyIndex++ // テクスチャキーのインデックスをインクリメント
-      const textureKey = `planet${this.planetTextureKeyIndex}` // テクスチャキーを生成
-      graphics.generateTexture(textureKey, radius * 2, radius * 2)
-      graphics.destroy() // グラフィックオブジェクトを破棄
-
-      // 惑星を作成し、物理エンジンに追加
-      const planet = this.physics.add.staticSprite(x, y, textureKey)
-
-      // 惑星オーバーラップを検出
-      //this.physics.add.overlap(this.spaceship, planet, this.handleoverlap, null, this);
-
-      // 惑星同士が重なっていたり、包含していたら、惑星を削除
-      this.planets.getChildren().forEach((planet2) => {
-        if (planet !== planet2) {
-          const bounds1 = planet.getBounds()
-          const bounds2 = planet2.getBounds()
-
-          if (
-            Phaser.Geom.Intersects.RectangleToRectangle(bounds1, bounds2) ||
-            Phaser.Geom.Rectangle.ContainsRect(bounds1, bounds2) ||
-            Phaser.Geom.Rectangle.ContainsRect(bounds2, bounds1)
-          ) {
-            //テクスチャキーを取得
-            const textureKey = planet.texture.key
-            planet.destroy()
-            //テクスチャも削除
-            this.textures.removeKey(textureKey)
-          }
-        }
-      })
-      //グループに追加
-      this.planets.add(planet)
-    }
-  }*/
-
   handleoverlap(spaceship, overlapplanet) {
     //グループからの削除
     this.planets.remove(overlapplanet, true, true)
     //宇宙船と惑星が衝突した際の処理
     overlapplanet.destroy()
+    //テクスチャキーを取得
+    const textureKey = overlapplanet.texture.key
     //獲得惑星数をインクリメント
-    this.gotplanets++
+    if (textureKey.includes('gold')) {
+      this.gotplanets_gold++
+    } else if (textureKey.includes('purple')) {
+      this.gotplanets_purple++
+    } else {
+      this.gotplanets_blue++
+    }
   }
 
   returntoBasePlanet = () => {
     //arrow関数が重要
     //基地に戻るかどうかの選択肢を表示
     //console.log('基地に戻りますか？')
+    this.registry.set('gotplanets_gold', this.gotplanets_gold)
+    this.registry.set('gotplanets_purple', this.gotplanets_purple)
+    this.registry.set('gotplanets_blue', this.gotplanets_blue)
+    this.registry.set('gotplanets', this.gotplanets)
     if (this.overlapBase) return
-    this.scene.pause()
+    //基地に戻るシーンを表示
     this.scene.launch('ReturntoBasePlanet')
     this.overlapBase = true
-    //基地に戻るボタンを表示
-    //基地に戻るボタンをクリックすると、基地に戻る
+    this.scene.pause()
   }
 
   generateSpaceBackground() {

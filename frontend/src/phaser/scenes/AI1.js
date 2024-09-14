@@ -4,7 +4,9 @@ class AI1 extends Phaser.Scene {
   constructor() {
     super({ key: 'AI1' }) //ここでは、K-NNを選択した場合の処理を記述
   }
-  preload() {}
+  preload() {
+    //送信データの読み込み
+  }
   create() {
     //背景の描画
     const width = this.cameras.main.width

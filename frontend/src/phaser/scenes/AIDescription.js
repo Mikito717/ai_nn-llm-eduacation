@@ -72,6 +72,23 @@ class AIDescription extends Phaser.Scene {
       .on('pointerout', () => {
         backButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
       })
+
+    //使用する学習データ量を指定するボタンを表示
+    const dataButton = this.add
+      .text(200, 300, 'データ量を指定', {
+        fontSize: '48px',
+        fill: '#fff',
+        backgroundColor: '#000',
+        padding: { x: 10, y: 5 },
+      })
+      .setInteractive()
+      .on('pointerdown', () => this.scene.start('DataSelect'))
+      .on('pointerover', () => {
+        dataButton.setStyle({ fill: '#ff0', backgroundColor: '#333' })
+      })
+      .on('pointerout', () => {
+        dataButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
+      })
   }
 
   update(time, delta) {

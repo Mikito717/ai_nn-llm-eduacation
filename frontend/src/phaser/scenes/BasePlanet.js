@@ -8,6 +8,10 @@ class BasePlanet extends Phaser.Scene {
     super({ key: 'BasePlanet' })
     //どのAIが選択されているか
     this.selectedAI = null
+    //惑星数
+    this.planets_gold = 0
+    this.planets_purple = 0
+    this.planets_blue = 0
   }
 
   preload() {
@@ -66,12 +70,43 @@ class BasePlanet extends Phaser.Scene {
       .on('pointerout', () => {
         backButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
       })
+
+    //保存した惑星数を取得
+    this.planets_gold = this.registry.get('gotplanets_gold')
+    this.planets_purple = this.registry.get('gotplanets_purple')
+    this.planets_blue = this.registry.get('gotplanets_blue')
+
+    //惑星数を表示
+    this.add.text(0, 0, `gold: ${this.planets_gold}`, {
+      fontSize: '30px',
+      fill: '#ffd700',
+      backgroundColor: '#000',
+      padding: { x: 10, y: 5 },
+    })
+    this.add.text(0, 50, `purple: ${this.planets_purple}`, {
+      fontSize: '30px',
+      fill: '#800080',
+      backgroundColor: '#000',
+      padding: { x: 10, y: 5 },
+    })
+    this.add.text(0, 100, `blue: ${this.planets_blue}`, {
+      fontSize: '30px',
+      fill: '#0000ff',
+      backgroundColor: '#000',
+      padding: { x: 10, y: 5 },
+    })
+
+    //貯蔵した惑星数をストレージに保管
+    localStorage.setItem('planets_gold', this.planets_gold)
+    localStorage.setItem('planets_purple', this.planets_purple)
+    localStorage.setItem('planets_blue', this.planets_blue)
   }
 
   showAIDescription(name) {
     //どのAIが選択されているか
     this.selectedAI = name
     this.scene.launch('AIDescription', { selectedAI: this.selectedAI })
+    this.scene.pause()
   }
 
   update() {

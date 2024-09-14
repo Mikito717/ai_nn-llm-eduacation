@@ -3,6 +3,9 @@ import Phaser from 'phaser'
 class ReturntoBasePlanet extends Phaser.Scene {
   constructor() {
     super({ key: 'ReturntoBasePlanet' })
+    this.planets_gold = 0
+    this.planets_purple = 0
+    this.planets_blue = 0
   }
   preload() {}
   create() {
@@ -19,6 +22,11 @@ class ReturntoBasePlanet extends Phaser.Scene {
     returnButton.setInteractive()
     returnButton.on('pointerdown', () => {
       this.scene.start('BasePlanet')
+      this.events.emit('gotplanets2', {
+        gold: this.planets_gold,
+        purple: this.planets_purple,
+        blue: this.planets_blue,
+      })
       this.scene.stop('ReturntoBasePlanet')
       this.scene.stop('GameScene0')
     })
