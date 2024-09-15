@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import k_nn
+import numpy as np
+import torch
 
 app = Flask(__name__)
 CORS(app)
@@ -9,28 +11,47 @@ CORS(app)
 def run_knn():
     print("start run_knn")
     data = request.json
-    #k_value = data['k']#k>=100
-    #distance_metric = data['distance_metric']
+    data_gold=data['comsumeData_gold']
+    data_purple=data['comsumeData_purple'] 
+    data_blue=data['comsumeData_blue']
 
     #for debug
-    k_value = 100
+    k_value = 100*data_gold+10*data_purple+data_blue
     distance_metric = "euclidean"
     
-    # ここでK-NNの処理を行います
-    new_image_path = '.\\PetImages\\test_cat.jpg'
-    predict=k_nn.k_nn_learning(k_value, distance_metric, new_image_path)
-    
-    #予測のラベルから、猫か犬かを判定
+    #k-nnを指定した学習数で実行
+    #k_value=10000
+    distance_metric="euclidean"
+    predict=k_nn.k_nn_learning(k_value,distance_metric,"")
+
+    #予測のラベルから、服を予測
     if predict[1]==0:
-        predict[1]="猫"
-    else:
-        predict[1]="犬"
+        predict[1]="T-shirt/top"
+    elif predict[1]==1:
+        predict[1]="Trouser"
+    elif predict[1]==2:
+        predict[1]="Pullover"
+    elif predict[1]==3:
+        predict[1]="Dress"
+    elif predict[1]==4:
+        predict[1]="Coat"
+    elif predict[1]==5:
+        predict[1]="Sandal"
+    elif predict[1]==6:
+        predict[1]="Shirt"
+    elif predict[1]==7:
+        predict[1]="Sneaker"
+    elif predict[1]==8:
+        predict[1]="Bag"
+    elif predict[1]==9:
+        predict[1]="Ankle boot"
     result = {
-        'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が完了しました。あなたの画像は{predict[0]}点で{predict[1]}です'
+        'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が完了しました。あなたの画像は{predict[0]}点で{predict[1]}です.答えは、{predict[2]}です'
     }
     
     return jsonify(result)
 
+@app.route('/run_svm', methods=['POST'])
 def run_svm():
     print("start run_svm")
     data =request.json
@@ -42,6 +63,7 @@ def run_svm():
     }
     return jsonify(result)
 
+@app.route('/run_kmeans', methods=['POST'])
 def run_kmeans():
     print("start run_kmeans")
     data = request.json
@@ -53,6 +75,7 @@ def run_kmeans():
     }
     return jsonify(result)
 
+@app.route('/run_pca', methods=['POST'])
 def run_pca():
     print("start run_pca")
     data = request.json
@@ -64,6 +87,7 @@ def run_pca():
     }
     return jsonify(result)
 
+@app.route('/run_randomforest', methods=['POST'])
 def run_randomforest():
     print("start run_randomforest")
     data = request.json
@@ -75,6 +99,7 @@ def run_randomforest():
     }
     return jsonify(result)
 
+@app.route('/run_RNN', methods=['POST'])
 def run_RNN():
     print("start run_RNN")
     data = request.json
@@ -86,6 +111,7 @@ def run_RNN():
     }
     return jsonify(result)
 
+@app.route('/run_CNN', methods=['POST'])
 def run_CNN():
     print("start run_CNN")
     data = request.json
@@ -97,6 +123,7 @@ def run_CNN():
     }
     return jsonify(result)
 
+@app.route('/run_LLM', methods=['POST'])
 def run_LLM():
     print("start run_LLM")
     data = request.json

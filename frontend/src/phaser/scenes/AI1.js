@@ -6,6 +6,9 @@ class AI1 extends Phaser.Scene {
   }
   preload() {
     //送信データの読み込み
+    this.comsumeData_gold = this.registry.get('comsumeData_gold')
+    this.comsumeData_purple = this.registry.get('comsumeData_purple')
+    this.comsumeData_blue = this.registry.get('comsumeData_blue')
   }
   create() {
     //背景の描画
@@ -21,7 +24,10 @@ class AI1 extends Phaser.Scene {
       },
       body: JSON.stringify({
         //データを送信
-        data: 'collected data', //ここにデータを入れる
+        //ここにデータを入れる
+        data_gold: 'comsumeData_gold',
+        data_purple: 'comsumeData_purple',
+        data_blue: 'comsumeData_blue',
       }),
     })
       .then((res) => res.json())

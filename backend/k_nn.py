@@ -1,55 +1,38 @@
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 import cv2
-
-# 画像をロードして前処理する関数
-def load_and_preprocess_image(filepath, size=(64, 64)):
-    img = cv2.imread(filepath)
-    if img is None:
-        return False
-    else:
-        img = cv2.resize(img,size)
-        img=img.flatten()
-    return img
+from sklearn.datasets import fetch_openml
 
 def k_nn_learning(k_train,distance_metric, new_image_path):
-    #k_trainを整数に変換
+ #k_trainを整数に変換
     k_train=int(k_train)
-    # データセットの作成
-    cat_images = [f'.\\PetImages\\Cat\\{i}.jpg' for i in range(0, k_train)]
-    dog_images = [f'.\\PetImages\\Dog\\{i}.jpg' for i in range(0, k_train)]
 
-    X = []
-    y = []
+    fashion_mnist = fetch_openml('Fashion-MNIST',as_frame=False)
 
-    for image_path in cat_images:
-        img=load_and_preprocess_image(image_path)
-        if img is False:
-            continue
-        X.append(img)
-        y.append(0)  # 猫のラベル
+    X = fashion_mnist.data
+    y = fashion_mnist.target
+    X=X.reshape(X.shape[0], -1)
 
-    for image_path in dog_images:
-        img=load_and_preprocess_image(image_path)
-        if img is False:
-            continue
-        X.append(img)
-        y.append(1)  # 犬のラベル
+    # 新しい画像を分類
+    random=np.random.randint(0,len(X))
+    new_image = X[random]
+    y_true = y[random]
+    X = np.delete(X, random, axis=0)
+    y = np.delete(y, random, axis=0)
 
-    X = np.array(X)
-    y = np.array(y)
+    #ラベルを整数値へ
+    y = y.astype(int)
+
+    #Xの中からランダムにk_trainこのデータを取得
+    random_indices = np.random.choice(len(X), k_train, replace=False)
+    X = X[random_indices]
+    y = y[random_indices]
 
     # K-NNモデルのトレーニング
     knn = KNeighborsClassifier(n_neighbors=k_train)
     knn.fit(X, y)
 
     k = 100
-    
-    # 新しい画像を分類
-    new_image = load_and_preprocess_image(new_image_path)
-    #print(new_image_path)
-    if new_image is False:
-        print("画像が読み込めませんでした")
         
     # 近傍点の取得
     distances, indices = knn.kneighbors([new_image], n_neighbors=k)
@@ -68,6 +51,7 @@ def k_nn_learning(k_train,distance_metric, new_image_path):
     result=[]
     result.append(correct_label_count)
     result.append(predicted_label)
+    result.append(y_true)
     
     #実行終了を表示
     print("K-NNの処理が完了しました")

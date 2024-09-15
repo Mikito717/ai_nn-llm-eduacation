@@ -373,6 +373,7 @@ class DataSelect extends Phaser.Scene {
 
     //戻るボタン
     const backButton = this.add
+
       .text(200, 500, '戻る', {
         fontSize: '48px',
         fill: '#fff',
@@ -387,13 +388,39 @@ class DataSelect extends Phaser.Scene {
       .on('pointerout', () => {
         backButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
       })
+
+    //次へボタン
+    this.nextButton = this.add
+
+      .text(400, 500, '次へ', {
+        fontSize: '48px',
+        fill: '#fff',
+        backgroundColor: '#000',
+        padding: { x: 10, y: 5 },
+      })
+      .setInteractive()
+      .on('pointerdown', () => {
+        this.registry.set('consumeData_gold', this.consumeData_gold)
+        this.registry.set('consumeData_purple', this.consumeData_purple)
+        this.registry.set('consumeData_blue', this.consumeData_blue)
+        this.scene.start('AIDescription')
+      })
+      .on('pointerover', () => {
+        this.nextButton.setStyle({ fill: '#ff0', backgroundColor: '#333' })
+      })
+      .on('pointerout', () => {
+        this.nextButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
+      })
   }
 
   update(time, delta) {
     //データを選択していない場合は、文章を表示
 
-    if (this.selectedData === null) this.notselected.setVisible(true)
-    else {
+    if (this.selectedData === null) {
+      this.notselected.setVisible(true)
+      this.nextButton.setInteractive(false)
+    } else {
+      this.nextButton.setInteractive(true)
       this.selecttext.setVisible(true)
       //代わりに選択しているデータを表示
       if (this.selectedData === 'gold') {
