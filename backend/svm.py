@@ -6,22 +6,20 @@ from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import pandas as pd
+from tensorflow.keras.datasets import cifar10
+from sklearn.preprocessing import StandardScaler
 
 #todo:BGRのそれぞれの掛け合わせごとに、学習させる（3通り）
 
 # 画像をロードして前処理する関数
 def load_and_preprocess_image(filepath, size=(64, 64)):
-    img = cv2.imread(filepath)
+    #img = cv2.imread(filepath)
+    img=filepath
     if img is None:
         return False
     else:
-        img = cv2.resize(img, size)
-        #画像のRGBの平均値を求める
-        b_average = np.mean(img[:,:,0])
-        g_average = np.mean(img[:,:,1])
-        r_average = np.mean(img[:,:,2])
-        bgr=[b_average,g_average,r_average]
-
+        #各カラー（RGB)の平均値を算出
+        bgr = np.mean(img, axis=(0, 1))
     return bgr
 
 def append_bgr(color1,color2):
@@ -30,78 +28,53 @@ def append_bgr(color1,color2):
         color12.append([color1[i],color2[i]])
     return color12
 
+
 #SVMの境界線を描画する関数(dimensions=2の場合)
-def draw_svm_boundary(X_train,y_train,svm_model_bg,svm_model_gr,svm_model_br):
+def draw_svm_boundary(RGBdata,target,model,datamode):
     #それぞれの軸は、RG,BR,BGのどれか
     #それぞれの軸のデータを取り出す
-    b_train = [i[0] for i in X_train]
-    g_train = [i[1] for i in X_train]
-    r_train = [i[2] for i in X_train]
+    if datamode=='bg':
+        first_train = [i[0] for i in RGBdata]
+        second_train = [i[1] for i in RGBdata]
+        #SVMのモデルを作成
+    elif datamode=='gr':
+        first_train = [i[0] for i in RGBdata]
+        second_train = [i[1] for i in RGBdata]
+        #SVMのモデルを作成
+    elif datamode=='br':
+        first_train = [i[0] for i in RGBdata]
+        second_train = [i[1] for i in RGBdata]
+        #SVMのモデルを作成
+    else:
+        print('error')
+        return
 
-    #それぞれを軸にして、3つの表を作成し、それぞれに対してSVMの境界線を描画する
-    #BG
-    plt.scatter(b_train, g_train, c=y_train, cmap='winter')
-    ax = plt.gca()
+    #first,secondを軸にして、各データ点を描画する
+    plt.scatter(first_train, second_train, c=target, cmap='viridis')
+
+    #SVMモデルで境界線を描画する
+    ax=plt.gca()
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
 
-    #generate grid points for decision boundary
+    #グリッドを作る
     xx = np.linspace(xlim[0], xlim[1], 30)
     yy = np.linspace(ylim[0], ylim[1], 30)
     YY, XX = np.meshgrid(yy, xx)
     xy = np.vstack([XX.ravel(), YY.ravel()]).T
-
-    #get the decision boundary
-    Z = svm_model_bg.decision_function(xy).reshape(XX.shape)
-    ax.contour(XX, YY, Z, colors='k', levels=[-1, 0, 1], alpha=0.5, linestyles=['--', '-', '--'])
-    
+    Z = model.decision_function(xy).reshape(XX.shape)
+    ax.contour(XX, YY, Z, colors='k', levels=[-1, 0, 1], alpha=0.5,
+               linestyles=['--', '-', '--'])
 
     #save the plot
     #plt.savefig('svm_bg.png')
     plt.show()
 
-    #GR
-    plt.scatter(g_train, r_train, c=y_train, cmap='winter')
-    ax = plt.gca()
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
 
-    #generate grid points for decision boundary
-    xx = np.linspace(xlim[0], xlim[1], 30)
-    yy = np.linspace(ylim[0], ylim[1], 30)
-    YY, XX = np.meshgrid(yy, xx)
-    xy = np.vstack([XX.ravel(), YY.ravel()]).T
-
-    #get the decision boundary
-    Z = svm_model_gr.decision_function(xy).reshape(XX.shape)
-    ax.contour(XX, YY, Z, colors='k', levels=[-1, 0, 1], alpha=0.5, linestyles=['--', '-', '--'])
-    
-
-    #save the plot
-    #plt.savefig('svm_gr.png')
-    plt.show()
-
-    #BR
-    plt.scatter(b_train, r_train, c=y_train, cmap='winter')
-    ax = plt.gca()
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
-    
-    #generate grid points for decision boundary
-    xx = np.linspace(xlim[0], xlim[1], 30)
-    yy = np.linspace(ylim[0], ylim[1], 30)
-    YY, XX = np.meshgrid(yy, xx)
-    xy = np.vstack([XX.ravel(), YY.ravel()]).T
-
-    #get the decision boundary
-    Z = svm_model_br.decision_function(xy).reshape(XX.shape)
-    ax.contour(XX, YY, Z, colors='k', levels=[-1, 0, 1], alpha=0.5, linestyles=['--', '-', '--'])
-    
 
     #save the plot
     #plt.savefig('svm_br.png')
     plt.show()
-
 
 
 

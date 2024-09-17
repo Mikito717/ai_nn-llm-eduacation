@@ -20,9 +20,10 @@ def run_knn():
     distance_metric = "euclidean"
     
     #k-nnを指定した学習数で実行
-    #k_value=10000
+    #プレイヤーが、10個のお題のうち、どれかを選ぶ
+    player_class=3
     distance_metric="euclidean"
-    predict=k_nn.k_nn_learning(k_value,distance_metric,"")
+    predict=k_nn_learning(1000,"euclidean","",player_class)
 
     #予測のラベルから、服を予測
     if predict[1]==0:
@@ -45,10 +46,8 @@ def run_knn():
         predict[1]="Bag"
     elif predict[1]==9:
         predict[1]="Ankle boot"
-    result = {
-        'message': f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が完了しました。あなたの画像は{predict[0]}点で{predict[1]}です.答えは、{predict[2]}です'
-    }
-    
+    print( f'K: {k_value}, 距離の計量法: {distance_metric} - 処理が完了しました。あなたの画像は{predict[0]}点で{predict[1]}です.答えは、{predict[2]}です')
+
     return jsonify(result)
 
 @app.route('/run_svm', methods=['POST'])
