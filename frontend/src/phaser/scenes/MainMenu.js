@@ -12,7 +12,7 @@ class MainMenu extends Phaser.Scene {
       .setOrigin(0.5)
 
     // ゲームモードのボタン
-    const gameModes = ['game', 'BasePlanet', 'モード3']
+    const gameModes = ['game', 'BasePlanet', 'タスク']
     gameModes.forEach((mode, index) => {
       const button = this.add
         .text(400, 200 + index * 50, mode, { fontSize: '24px', color: '#fff' })
@@ -30,6 +30,9 @@ class MainMenu extends Phaser.Scene {
     }
     if (mode === 'BasePlanet') {
       this.scene.start('BasePlanet') // BasePlanet シーンへ遷移
+    }
+    if (mode === 'タスク') {
+      this.scene.start('TaskList') // BasePlanet シーンへ遷移
     }
   }
 }
