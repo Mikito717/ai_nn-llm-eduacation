@@ -22,11 +22,15 @@ class ReturntoBasePlanet extends Phaser.Scene {
     returnButton.setInteractive()
     returnButton.on('pointerdown', () => {
       this.scene.start('BasePlanet')
-      this.events.emit('gotplanets2', {
-        gold: this.planets_gold,
+      /*this.events.emit('gotplanets2', {
+      /  gold: this.planets_gold,
         purple: this.planets_purple,
         blue: this.planets_blue,
-      })
+      })*/
+     this.planets_gold=this.registry.get('gotplanets_gold')
+      this.planets_purple=this.registry.get('gotplanets_purple')
+      this.planets_blue=this.registry.get('gotplanets_blue')
+      
       this.scene.stop('ReturntoBasePlanet')
       this.scene.stop('GameScene0')
     })

@@ -12,6 +12,9 @@ class BasePlanet extends Phaser.Scene {
     this.planets_gold = 0
     this.planets_purple = 0
     this.planets_blue = 0
+    this.baseplanets_gold = 0
+    this.baseplanets_purple = 0
+    this.baseplanets_blue = 0
   }
 
   preload() {
@@ -72,9 +75,30 @@ class BasePlanet extends Phaser.Scene {
       })
 
     //保存した惑星数を取得
+    this.baseplanets_gold = this.registry.get('baseplanets_gold')
+    this.baseplanets_purple = this.registry.get('baseplanets_purple')
+    this.baseplanets_blue = this.registry.get('baseplanets_blue')
     this.planets_gold = this.registry.get('gotplanets_gold')
     this.planets_purple = this.registry.get('gotplanets_purple')
     this.planets_blue = this.registry.get('gotplanets_blue')
+
+    //惑星数を更新
+    this.baseplanets_gold += this.planets_gold
+    this.baseplanets_purple += this.planets_purple
+    this.baseplanets_blue += this.planets_blue
+
+    //惑星を保存
+    this.registry.set('baseplanets_gold', this.baseplanets_gold)
+    this.registry.set('baseplanets_purple', this.baseplanets_purple)
+    this.registry.set('baseplanets_blue', this.baseplanets_blue)
+
+    //帳尻合わせ
+    this.planets_gold=this.baseplanets_gold
+    this.planets_purple=this.baseplanets_purple
+    this.planets_blue=this.baseplanets_blue
+    this.registry.set('gotplanets_gold',0)
+    this.registry.set('gotplanets_purple',0)
+    this.registry.set('gotplanets_blue',0)
 
     //惑星数を表示
     this.add.text(0, 0, `gold: ${this.planets_gold}`, {
