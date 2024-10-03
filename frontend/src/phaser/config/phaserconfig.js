@@ -10,6 +10,7 @@ import AI1 from '../scenes/AI1'
 import DataSelect from '../scenes/DataSelect'
 import TaskList from '../scenes/TaskList'
 import CreateTask from '../scenes/CreateTask'
+import PreprocessData from '../scenes/PreprocessData'
 
 const config = {
   type: Phaser.AUTO,
@@ -34,6 +35,7 @@ const config = {
     DataSelect,
     TaskList,
     CreateTask,
+    PreprocessData,
   ],
 }
 
