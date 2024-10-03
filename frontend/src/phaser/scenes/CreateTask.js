@@ -1,49 +1,62 @@
 import Phaser from 'phaser'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import TaskCreator from '../../components/TaskCreator'
 
 class CreateTask extends Phaser.Scene {
   constructor() {
     super({ key: 'CreateTask' })
-  }
-
-  preload() {
-    // Load assets here
+    this.container = null // DOMコンテナの参照を保持
   }
 
   create() {
-    // Initialize your scene here
-    this.add.text(100, 100, 'Create Task', {
-      font: '24px Arial',
-      fill: '#ffffff',
-    })
+    // Mount React component inside Phaser scene
+    this.container = document.createElement('div')
+    this.container.style.position = 'absolute'
+    this.updateContainerPosition() // 初期位置を設定
+    document.body.appendChild(this.container)
 
-    //create the input field
-    const inputField = document.createElement('input')
-    inputField.type = 'text'
-    inputField.placeholder = 'Enter Task Here'
-    inputField.style.position = 'absolute'
-    inputField.style.left = '100px'
-    inputField.style.top = '150px'
-    inputField.style.width = '200px'
-    inputField.style.height = '30px'
-    inputField.style.fontSize = '24px'
-    inputField.style.fontFamily = 'Arial'
-    document.body.appendChild(inputField)
-
-    //add event listener to the input field
-    inputField.addEventListener('input', (event) => {
-      console.log(event.target.value)
-    })
+    ReactDOM.render(
+      <TaskCreator
+        onSubmitTask={(taskName) => {
+          console.log('Task submitted:', taskName)
+          // Handle task submission in Phaser scene
+        }}
+        onSelectAI={(ai) => {
+          console.log('AI selected:', ai)
+          // Handle AI selection in Phaser scene
+        }}
+        onBack={() => {
+          this.shutdown()
+          this.scene.start('TaskList')
+        }}
+      />,
+      this.container,
+    )
+    // ウィンドウのサイズ変更イベントを監視
+    window.addEventListener('resize', this.updateContainerPosition.bind(this))
   }
 
-  update(time, delta) {
-    // Update your scene here
+  updateContainerPosition() {
+    console.log('updateContainerPosition')
+    // Phaserゲームキャンバスのサイズを取得
+    const canvas = this.game.canvas.getBoundingClientRect()
+    this.container.style.left = `${canvas.left + 150}px`
+    this.container.style.top = `${canvas.top + 20}px`
   }
 
   shutdown() {
-    // Cleanup your scene here
-    //remove the input field from the DOM
-    if (this.inputField)
-      document.body.removeChild(document.querySelector('input'))
+    // シーンがシャットダウンするときにReactコンポーネントをクリーンアップ
+    if (this.container) {
+      ReactDOM.unmountComponentAtNode(this.container)
+      document.body.removeChild(this.container)
+      this.container = null // 参照をクリア
+    }
+    // メモリリークを防ぐためにイベントリスナーを削除
+    window.removeEventListener(
+      'resize',
+      this.updateContainerPosition.bind(this),
+    )
   }
 }
 
