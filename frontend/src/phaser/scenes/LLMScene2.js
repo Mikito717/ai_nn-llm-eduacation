@@ -1,17 +1,13 @@
 import Phaser from 'phaser'
 import React from 'react'
 import ReactDOM from 'react-dom'
-import App from '../../components/App' // Assuming you have a React component named App
+import ChatUI from '../../components/ChatUI' // Assuming you have a React component named App
 
 class LLMScene2 extends Phaser.Scene {
   constructor() {
     super({ key: 'LLMScene2' })
 
     this.container = null // DOMコンテナの参照を保持
-  }
-
-  preload() {
-    // Load assets here
   }
 
   create() {
@@ -22,10 +18,31 @@ class LLMScene2 extends Phaser.Scene {
     document.body.appendChild(this.container)
 
     // Mount the React app
-    ReactDOM.render(<App />, reactContainer)
+    ReactDOM.render(<ChatUI />, this.container)
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
+
+    //LLMScene1に戻るボタン
+    const backButton = this.add.text(10, 550, 'Back to LLM Entrance', {
+      backgroundColor: '#000',
+      color: '#fff',
+      padding: 10,
+    })
+    backButton.setInteractive()
+    backButton.on('pointerdown', () => {
+      this.shutdown()
+      this.scene.start('LLMScene1')
+    })
+
+    //マウスオーバー
+    backButton.on('pointerover', () => {
+      backButton.setStyle({ fill: '#ff0' })
+    })
+    backButton.on('pointerout', () => {
+      backButton.setStyle({ fill: '#fff' })
+    })
+
   }
 
   updateContainerPosition() {

@@ -3,6 +3,7 @@ from flask_cors import CORS
 import k_nn
 import numpy as np
 import torch
+from OpenAI_Chat import chat_with_openai 
 
 app = Flask(__name__)
 CORS(app)
@@ -126,11 +127,12 @@ def run_CNN():
 def run_LLM():
     print("start run_LLM")
     data = request.json
+    message = data.get('message')
+    responce=chat_with_openai(message)
 
-    #ここでLLMの処理を行います
 
     result = {
-        'message': 'LLM - 処理が完了しました。'
+        'message': responce
     }
     return jsonify(result)
 

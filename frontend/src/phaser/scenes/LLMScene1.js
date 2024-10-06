@@ -28,6 +28,10 @@ class LLMScene1 extends Phaser.Scene {
           this.shutdown()
           this.scene.start('LLMScene2')
         }}
+        endgame={() => {
+          this.shutdown()
+          this.scene.start('MainMenu')
+        }}
       />,
       this.container,
     )
@@ -40,7 +44,7 @@ class LLMScene1 extends Phaser.Scene {
     console.log('updateContainerPosition')
     // Phaserゲームキャンバスのサイズを取得
     const canvas = this.game.canvas.getBoundingClientRect()
-    this.container.style.left = `${canvas.left + 150}px`
+    this.container.style.left = `${canvas.left + 100}px`
     this.container.style.top = `${canvas.top + 20}px`
   }
 
