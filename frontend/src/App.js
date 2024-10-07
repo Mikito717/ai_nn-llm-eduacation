@@ -6,17 +6,7 @@ import phaserConfig from './phaser/config/phaserconfig' // 正しいパスに修
 function App() {
   const [phaserGame, setPhaserGame] = useState(null)
   const [showGame, setShowGame] = useState(false)
-
-  /* useEffect(() => {
-    if (phaserGame) {
-      if (showGame) {
-        phaserGame.scene.start('MainMenu') // ゲームが初期化済みであれば、シーンを開始
-      } else {
-        phaserGame.destroy(true) // ゲームインスタンスを破棄して表示エリアを隠す
-        setPhaserGame(null)
-      }
-    }
-  }, [phaserGame, showGame])*/
+  const [eventData, setEventData] = useState(null) // イベントデータを保存するための状態
 
   const startGame = () => {
     if (!phaserGame) {
@@ -25,6 +15,22 @@ function App() {
     }
     setShowGame(true) // ゲーム表示を切り替え
   }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const togglevisibility = () => {
+    setShowGame(!showGame)
+  }
+
+  useEffect(() => {
+    if (phaserGame) {
+      // ゲームのイベントを監視
+      phaserGame.events.on('toggle', (data) => {
+        console.log('イベントが発生しました', data)
+        setEventData(data) // イベントデータを保存
+        togglevisibility() // ゲーム表示を切り替え
+      })
+    }
+  }, [phaserGame, togglevisibility])
 
   return (
     <div className="App">

@@ -13,6 +13,7 @@ import CreateTask from '../scenes/CreateTask'
 import PreprocessData from '../scenes/PreprocessData'
 import LLMScene1 from '../scenes/LLMScene1'
 import LLMScene2 from '../scenes/LLMScene2'
+import SelectedTaskp from '../scenes/SelectedTask-ph'
 
 const config = {
   type: Phaser.AUTO,
@@ -40,6 +41,7 @@ const config = {
     PreprocessData,
     LLMScene1,
     LLMScene2,
+    SelectedTaskp,
   ],
 }
 

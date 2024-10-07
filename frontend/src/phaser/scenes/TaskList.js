@@ -45,7 +45,7 @@ class TaskList extends Phaser.Scene {
     })
     selectTaskButton.setInteractive()
     selectTaskButton.on('pointerdown', () => {
-      this.scene.start('SelectTask')
+      this.scene.start('SelectedTaskp')
     })
 
     //each button will have a pointerover and pointerout event listener to change the color of the text
