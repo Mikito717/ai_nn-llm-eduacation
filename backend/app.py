@@ -128,7 +128,12 @@ def run_LLM():
     print("start run_LLM")
     data = request.json
     message = data.get('message')
-    responce=chat_with_openai(message)
+    reset_flag = False
+    if chatnumber!=data.get('chatNumber'):
+        reset_flag = True
+        chatnumber=data.get('chatNumber')
+    
+    responce=chat_with_openai(message,chatnumber,reset_flag)
 
 
     result = {

@@ -1,38 +1,34 @@
 import Phaser from 'phaser'
 import React from 'react'
-import ReactDOM from 'react-dom'
-import ChatUI from '../../components/ChatUI'
+import LLMSelectionUI from '../../components/LLM_Selection_UI'
+import { createRoot } from 'react-dom/client'
 
-class LLMScene2 extends Phaser.Scene {
+class LLMScene3 extends Phaser.Scene {
   constructor() {
-    super({ key: 'LLMScene2' })
-
+    super({ key: 'LLMScene3' })
     this.container = null // DOMコンテナの参照を保持
   }
 
-  init(data) {
-    this.buttonNumber = data.buttonNumber
-  }
-
   create() {
-    console.log(`Button number received: ${this.buttonNumber}`)
     // Mount React component inside Phaser scene
     this.container = document.createElement('div')
     this.container.style.position = 'absolute'
     this.updateContainerPosition() // 初期位置を設定
     document.body.appendChild(this.container)
 
-    // Mount the React app with buttonNumber as a prop
-    ReactDOM.render(<ChatUI chatNumber={this.buttonNumber} />, this.container)
+    // Define the onchange function
+    const handleChange = (buttonNumber) => {
+      console.log(`Button ${buttonNumber} clicked`)
+      this.scene.start('LLMScene2', { buttonNumber })
+      // ここにボタンがクリックされたときの処理を追加
+    }
+
+    // Mount the React component
+    const root = createRoot(this.container)
+    root.render(<LLMSelectionUI onchange={handleChange} />)
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
-
-    // LLMScene1に戻るボタン
-    const backButton = this.add.text(10, 550, 'Back to LLM Entrance', {
-      backgroundColor: '#000',
-      color: '#fff',
-    })
   }
 
   updateContainerPosition() {
@@ -46,10 +42,11 @@ class LLMScene2 extends Phaser.Scene {
   shutdown() {
     // シーンがシャットダウンするときにReactコンポーネントをクリーンアップ
     if (this.container) {
-      ReactDOM.unmountComponentAtNode(this.container)
+      const root = createRoot(this.container)
+      root.unmount()
       document.body.removeChild(this.container)
     }
   }
 }
 
-export default LLMScene2
+export default LLMScene3

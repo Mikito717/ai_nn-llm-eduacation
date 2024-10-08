@@ -1,0 +1,41 @@
+I'd be happy to help you with each of these brain teasers. Here are my answers:
+
+1. If a gingerbread man has a headache, should he see a doctor or a baker?
+
+The answer is "a baker." A doctor would typically treat human patients, not food items like gingerbread men.
+
+2. There is a ladder hanging alongside the edge of a boat, positioned 2 meters above the surface of the sea. The sea water rises at a rate of half a meter per hour. How many hours will it take for the sea water to submerge the ladder?
+
+The answer is "4 hours." Since the ladder is initially 2 meters above the water and the water rises by 0.5 meters per hour, it will take 2 / 0.5 = 4 hours for the water to reach the base of the ladder.
+
+3. There are 5 birds standing on a tree. If you use a gun to shoot one dead, how many birds are still left?
+
+The answer is "4." Shooting one bird out of the five will not affect the number of remaining birds; it's just a single individual that is removed from the group.
+
+4. A cow walks 10 meters north, then 10 meters west, then 10 meters south, backs up and turns right, where is the cow’s tail facing?
+
+The answer is "east." The cow initially moves 10 meters north, but when it goes back 10 meters south, those 10 meters cancel each other out. Then, when it turns right after backing up, its tail will be facing east.
+
+5. A notice “Guide dogs are welcome” is posted at the shop front. Who is its intended reader? The dog or its owner?
+
+The answer is "its owner." While guide dogs are indeed welcome in the shop, the sign is likely intended to reassure customers that their own service animals (including owners) with disabilities are also welcome.
+
+6. Before Mount Everest was discovered in 1852, what was still the actual highest mountain in the world?
+
+The answer is "Chomolungma" or "Everest." Although it wasn't known as Mount Everest at the time of its initial discovery by George Mallory and Andrew Irvine in 1924, Chomolungma has been the highest mountain above sea level since its formation around 60 million years ago.
+
+7. It takes 5 minutes to steam each pork bun. How long does it take to steam 3 pork buns?
+
+The answer is "15 minutes." Since it takes 5 minutes to steam one pork bun, steaming three will take 3 x 5 = 15 minutes.
+
+8. Jo borrowed $500 from her mother, borrowed $500 from her father, bought a pair of shoes for $970, and left $30. Jo repaid $10 to her mother, $10 to her father, and left $10 to herself. Let’s recap: Jo owes Mom $490, owes Dad $490, and still has $10 left. $490+$490+$10=$990, so where did the remaining $10 go?
+
+The answer is "the transaction was reversed." When Jo repaid $10 to each parent, she effectively reduced her debt by $20 ($10 x 2). This means that the remaining $10 must have been a reversal of this payment, essentially "giving" it back to both parents. The math is correct: $990 (total debt) - $980 (reduced debt after repayment) = $10.
+
+9. How much compounded interest should the tooth fairy pay to the descendants of dinosaurs who buried their teeth underground millions of years ago?
+
+The answer is "none." Since these dinosaurs are extinct and have no living descendants, they wouldn't be eligible for compensation in the form of compounded interest.
+
+10. Why cannot vampires drink their own blood if they are thirsty?
+
+The answer is "self-harm" or "cannibalism." Vampires, being fictional creatures, would not be able to consume their own blood without becoming, in a sense, "stuck with themselves," which would lead to self-harm or cannibalism.
