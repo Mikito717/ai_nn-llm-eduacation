@@ -26,7 +26,7 @@ class LLMScene1 extends Phaser.Scene {
       <LLMEntrance
         startgame={() => {
           this.shutdown()
-          this.scene.start('LLMScene2')
+          this.scene.start('LLMScene3')
         }}
         endgame={() => {
           this.shutdown()

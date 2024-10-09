@@ -33,6 +33,22 @@ class LLMScene2 extends Phaser.Scene {
       backgroundColor: '#000',
       color: '#fff',
     })
+
+    // マウスオーバー時の処理を追加
+    backButton.setInteractive()
+    backButton.on('pointerover', function () {
+      backButton.setStyle({ backgroundColor: '#555', color: '#ff0' })
+    })
+
+    // マウスアウト時の処理を追加
+    backButton.on('pointerout', function () {
+      backButton.setStyle({ backgroundColor: '#000', color: '#fff' })
+    })
+
+    backButton.on('pointerdown', () => {
+      this.shutdown()
+      this.scene.start('LLMScene1')
+    })
   }
 
   updateContainerPosition() {

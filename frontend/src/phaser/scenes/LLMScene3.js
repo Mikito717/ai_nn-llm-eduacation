@@ -19,6 +19,7 @@ class LLMScene3 extends Phaser.Scene {
     // Define the onchange function
     const handleChange = (buttonNumber) => {
       console.log(`Button ${buttonNumber} clicked`)
+      this.shutdown()
       this.scene.start('LLMScene2', { buttonNumber })
       // ここにボタンがクリックされたときの処理を追加
     }

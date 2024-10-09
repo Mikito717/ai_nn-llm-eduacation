@@ -9,3 +9,15 @@ Category 7- Brain Teaser
  8) Jo borrowed $500 from her mother, borrowed $500 from her father, bought a pair of shoes for $970, and left $30. Jo repaid $10 to her mother, $10 to her father, and left $10 to herself. Let’s recap: Jo owes Mom $490, owes Dad $490, and still has $10 left. $490+$490+$10=$990, so where did the remaining $10 go?
  9) How much compounded interest should the tooth fairy pay to the descendants of dinosaurs who buried their teeth underground millions of years ago?
  10) Why cannot vampires drink their own blood if they are thirsty?
+
+カテゴリー 7- 頭の体操
+ 1) ジンジャーブレッドマンが頭痛になったら、医者に診てもらうべきか、パン屋に診てもらうべきか？
+ 2) 海面から2メートルの高さにあるボートの縁に、はしごがかかっている。海水は1時間に30分の速さで上昇する。海水がはしごを水没させるのに何時間かかるか。
+ 3) 木の上に5羽の鳥が立っている。鉄砲で1羽撃ち殺すと何羽残りますか。
+ 4) 牛が北へ10メートル、西へ10メートル、南へ10メートル歩き、後ずさりして右へ曲がります。
+ 5) 店先に「盲導犬歓迎」の張り紙がある。読者は誰だろう？犬か飼い主か？
+ 6) 1852年にエベレスト山が発見される前、まだ実際に世界で一番高い山は何だった？
+ 7) 豚まんを蒸すのに5分かかる。豚まん3個を蒸すのにかかる時間は？
+ 8) ジョーさんは母親から500ドル借り、父親から500ドル借り、970ドルで靴を買い、30ドル残した。ジョーは母親に10ドル、父親に10ドル返済し、自分に10ドル残した。要約しよう： ジョーはお母さんに490ドル借り、お父さんに490ドル借り、まだ10ドル残っている。490ドル+490ドル+10ドル=990ドルで、残りの10ドルはどこに行ったのでしょうか？
+ 9) 何百万年も前に歯を地中に埋めた恐竜の子孫に、歯の妖精はいくら複利で支払うべきか？
+ 10) 吸血鬼はのどが渇いても自分の血を飲めないのはなぜか？

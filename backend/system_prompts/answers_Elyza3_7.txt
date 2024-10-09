@@ -1,0 +1,31 @@
+I'll answer each question one by one!
+
+1. If a gingerbread man has a headache, should he see a doctor or a baker?
+→ Baker! (理由: Gingerbread manは食べ物なので、医者ではなく作ったバイヤーに相談する)
+
+2. There is a ladder hanging alongside the edge of a boat, positioned 2 meters above the surface of the sea. The sea water rises at a rate of half a meter per hour. How many hours will it take for the sea water to submerge the ladder?
+→ 4時間! (理由: Ladderが2m上にあり、海水は0.5m/hで上がる。Ladderの長さを分母に、上記の時間を掛ければ、合計して全体の高さと等しくなる)
+
+3. There are 5 birds standing on a tree. If you use a gun to shoot one dead, how many birds are still left?
+→ 4匹! (理由: 一度に一匹殺すから)
+
+4. A cow walks 10 meters north, then 10 meters west, then 10 meters south, backs up and turns right, where is the cow’s tail facing?
+→ East! (理由: Cowが北に歩き、西に歩き、南に戻る。牛は右回りに方向を変えるから)
+
+5. A notice “Guide dogs are welcome” is posted at the shop front. Who is its intended reader? The dog or its owner?
+→ Both! (理由: Guide dogは盲導犬で、店側は受け入れるが、主な読者は盲導犬の所有者)
+
+6. Before Mount Everest was discovered in 1852, what was still the actual highest mountain in the world?
+→ Mauna Kea! (理由: Mauna Keaは現在でも世界で5番目に高い山。地形が形成された時から、海水面上昇や火山活動のため、測定値以上に高さがある)
+
+7. It takes 5 minutes to steam each pork bun. How long does it take to steam 3 pork buns?
+→ 15分! (理由: 一回で三個を蒸すから)
+
+8. Jo borrowed $500 from her mother, borrowed $500 from her father, bought a pair of shoes for $970, and left $30. Jo repaid $10 to her mother, $10 to her father, and left $10 to herself. Let’s recap: Jo owes Mom $490, owes Dad $490, and still has$10 left.$490+$490+$10=$990、so where did the remaining$10 go?
+→ Mother! (理由: Joは30から10を差し引いて20が母に借りた残金。母に490を支払うと、合計して690になり、20より少ないから)
+
+9. How much compounded interest should the tooth fairy pay to the descendants of dinosaurs who buried their teeth underground millions of years ago?
+→ None! (理由: Dinosaursは化石で、現在も存在しない。したがって利子を払う必要がない)
+
+10. Why cannot vampires drink their own blood if they are thirsty？
+→ Vampires don't exist so it’s impossible to answer！
