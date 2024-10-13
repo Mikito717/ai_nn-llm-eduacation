@@ -1,6 +1,5 @@
 import Phaser from 'phaser'
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { createRoot } from 'react-dom/client'
 import LLMSelectionUI from ファイルパス
 

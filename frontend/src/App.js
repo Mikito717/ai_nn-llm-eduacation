@@ -1,40 +1,67 @@
-import React, { useState, useEffect } from 'react'
-import Phaser from 'phaser'
+import React, { useEffect, useState } from 'react'
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  useNavigate,
+} from 'react-router-dom'
 import Home from './components/Home'
-import phaserConfig from './phaser/config/phaserconfig' // 正しいパスに修正
+import Game from './components/Game'
+import Phaser from 'phaser'
+import config from './phaser/config/phaserconfig'
+import LLMResultUI from './components/LLM_ResultUI'
 
-function App() {
-  const [phaserGame, setPhaserGame] = useState(null)
+const App = () => {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  )
+}
+
+const AppContent = () => {
   const [showGame, setShowGame] = useState(false)
-  const [eventData, setEventData] = useState(null) // イベントデータを保存するための状態
+  const [eventData, setEventData] = useState(null)
+  const [phaserGame, setPhaserGame] = useState(null)
+  const [showHome, setShowHome] = useState(true)
 
-  const startGame = () => {
-    if (!phaserGame) {
-      const game = new Phaser.Game(phaserConfig)
-      setPhaserGame(game)
+  const navigate = useNavigate()
+
+  const toggleVisibility = () => {
+    setShowGame(!showGame)
+    if (!showGame) {
+      navigate('/game')
+    } else {
+      navigate('/')
     }
-    setShowGame(true) // ゲーム表示を切り替え
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const togglevisibility = () => {
-    setShowGame(!showGame)
+  const startGame = () => {
+    const game = new Phaser.Game(config)
+    setPhaserGame(game)
+    setShowGame(true)
+    setShowHome(false)
   }
 
   useEffect(() => {
     if (phaserGame) {
-      // ゲームのイベントを監視
       phaserGame.events.on('toggle', (data) => {
         console.log('イベントが発生しました', data)
-        setEventData(data) // イベントデータを保存
-        togglevisibility() // ゲーム表示を切り替え
+        setEventData(data)
+        toggleVisibility()
       })
     }
-  }, [phaserGame, togglevisibility])
+  }, [phaserGame])
 
   return (
     <div className="App">
-      {showGame ? <div id="phaser-game"></div> : <Home startGame={startGame} />}
+      <Routes>
+        {!showGame ? (
+          <Route path="/" element={<Home startGame={startGame} />} />
+        ) : (
+          <Route path="/game" element={<Game />} />
+        )}
+      </Routes>
     </div>
   )
 }

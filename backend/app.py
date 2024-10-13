@@ -128,18 +128,31 @@ def run_LLM():
     print("start run_LLM")
     data = request.json
     message = data.get('message')
-    reset_flag = False
-    if chatnumber!=data.get('chatNumber'):
-        reset_flag = True
-        chatnumber=data.get('chatNumber')
+    chatnumber = data.get('chatnumber')
+    reset_flag = data.get('resetflag')
+    username = data.get('username')
     
-    responce=chat_with_openai(message,chatnumber,reset_flag)
+    responce=chat_with_openai(message,chatnumber,reset_flag,username)
 
 
     result = {
         'message': responce
     }
     return jsonify(result)
+
+@app.route('/api/receive_LLM_results', methods=['POST'])
+def receive_LLM_results():
+    data = request.get_json()
+    finalanswer = data.get('finalanswer')
+    correctanswer = data.get('correctanswer')
+    score = data.get('score')
+    
+    # ここでデータを処理します（例：データベースに保存）
+    print(f"Final Answer: {finalanswer}")
+    print(f"Correct Answer: {correctanswer}")
+    print(f"Score: {score}")
+    
+    return jsonify({"message": "Data received successfully"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

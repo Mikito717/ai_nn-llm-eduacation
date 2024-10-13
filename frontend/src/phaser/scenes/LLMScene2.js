@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { createRoot } from 'react-dom/client'
 import ChatUI from '../../components/ChatUI'
 
 class LLMScene2 extends Phaser.Scene {
@@ -8,10 +8,12 @@ class LLMScene2 extends Phaser.Scene {
     super({ key: 'LLMScene2' })
 
     this.container = null // DOMコンテナの参照を保持
+    this.root = null // Store the root instance
   }
 
   init(data) {
     this.buttonNumber = data.buttonNumber
+    console.log(`Button number received: ${this.buttonNumber}`)
   }
 
   create() {
@@ -23,7 +25,14 @@ class LLMScene2 extends Phaser.Scene {
     document.body.appendChild(this.container)
 
     // Mount the React app with buttonNumber as a prop
-    ReactDOM.render(<ChatUI chatNumber={this.buttonNumber} />, this.container)
+    this.root = createRoot(this.container)
+    this.root.render(
+      <ChatUI
+        chatNumber={this.buttonNumber}
+        answerSelected={this.answerSelected.bind(this)}
+        username={this.registry.get('username')}
+      />,
+    )
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
@@ -47,8 +56,15 @@ class LLMScene2 extends Phaser.Scene {
 
     backButton.on('pointerdown', () => {
       this.shutdown()
-      this.scene.start('LLMScene1')
+      this.scene.start('LLMScene3')
     })
+  }
+
+  answerSelected(answer) {
+    this.currentAnswer = this.registry.get('answer')
+    console.log(`currentanswer: ${this.currentAnswer}`)
+    this.currentAnswer[this.buttonNumber - 1] = answer
+    this.registry.set('answer', this.currentAnswer)
   }
 
   updateContainerPosition() {
@@ -61,9 +77,10 @@ class LLMScene2 extends Phaser.Scene {
 
   shutdown() {
     // シーンがシャットダウンするときにReactコンポーネントをクリーンアップ
-    if (this.container) {
-      ReactDOM.unmountComponentAtNode(this.container)
+    if (this.container && this.root) {
+      this.root.unmount()
       document.body.removeChild(this.container)
+      this.root = null // Clear the root reference
     }
   }
 }

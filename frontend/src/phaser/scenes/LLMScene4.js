@@ -1,18 +1,17 @@
 import Phaser from 'phaser'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import LLMEntrance from '../../components/LLMEntrance' // Adjust the path as necessary
+import LLMResultUI from '../../components/LLM_ResultUI'
 
-class LLMScene1 extends Phaser.Scene {
+class LLMScene4 extends Phaser.Scene {
   constructor() {
-    super({ key: 'LLMScene1' })
-
+    super({ key: 'LLMScene4' })
     this.container = null // DOMコンテナの参照を保持
-    this.root = null // React rootの参照を保持
   }
 
-  preload() {
-    // Load any assets here
+  init(data) {
+    this.finalanswer = data.finalanswer
+    this.correctanswer = data.correctanswer
   }
 
   create() {
@@ -22,19 +21,15 @@ class LLMScene1 extends Phaser.Scene {
     this.updateContainerPosition() // 初期位置を設定
     document.body.appendChild(this.container)
 
-    // Render the React component into the div using createRoot
-    const container = this.container
-    this.root = createRoot(container)
-
-    this.root.render(
-      <LLMEntrance
-        startgame={() => {
+    // Mount the React component
+    const root = createRoot(this.container)
+    root.render(
+      <LLMResultUI
+        finalanswer={this.finalanswer}
+        correctanswer={this.correctanswer}
+        onback={() => {
           this.shutdown()
-          this.scene.start('LLMScene3')
-        }}
-        endgame={() => {
-          this.shutdown()
-          this.scene.start('MainMenu')
+          this.scene.start('LLMScene1')
         }}
       />,
     )
@@ -47,17 +42,17 @@ class LLMScene1 extends Phaser.Scene {
     console.log('updateContainerPosition')
     // Phaserゲームキャンバスのサイズを取得
     const canvas = this.game.canvas.getBoundingClientRect()
-    this.container.style.left = `${canvas.left + 100}px`
+    this.container.style.left = `${canvas.left + 150}px`
     this.container.style.top = `${canvas.top + 20}px`
   }
 
   shutdown() {
     // シーンがシャットダウンするときにReactコンポーネントをクリーンアップ
-    if (this.container && this.root) {
-      this.root.unmount()
+    if (this.container) {
+      const root = createRoot(this.container)
+      root.unmount()
       document.body.removeChild(this.container)
       this.container = null // 参照をクリア
-      this.root = null // 参照をクリア
     }
     // メモリリークを防ぐためにイベントリスナーを削除
     window.removeEventListener(
@@ -67,4 +62,4 @@ class LLMScene1 extends Phaser.Scene {
   }
 }
 
-export default LLMScene1
+export default LLMScene4

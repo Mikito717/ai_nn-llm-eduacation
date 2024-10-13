@@ -1,5 +1,5 @@
-import React from 'react';
-import { Button, Container, Typography, Box } from '@mui/material';
+import React from 'react'
+import { Button, Container, Typography, Box } from '@mui/material'
 
 function LLMEntrance({ startgame, endgame }) {
   return (
@@ -8,10 +8,25 @@ function LLMEntrance({ startgame, endgame }) {
         Welcome to the LLM Entrance
       </Typography>
       <Typography variant="body1" paragraph>
-        This is the starting point for interacting with our Language Learning Model.
+        This is the starting point for interacting with our Language Learning
+        Model.
       </Typography>
       <Box mt={4}>
-        <Button variant="contained" color="primary" onClick={startgame} style={{ marginRight: '10px' }}>
+        <Typography variant="h5" component="h2" gutterBottom>
+          ルール説明
+        </Typography>
+        <Typography variant="body2" paragraph>
+          このゲームでは、変わったLLMが6個出現しています。これらのLLMはそれぞれに独立で、互いのことを知りません。
+          あなたは、これらのLLMに質問をして、どのLLMが何のバイアスを持っているかを当てるゲームです。
+        </Typography>
+      </Box>
+      <Box mt={4}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={startgame}
+          style={{ marginRight: '10px' }}
+        >
           Start
         </Button>
         <Button variant="outlined" color="secondary" onClick={endgame}>
@@ -19,7 +34,7 @@ function LLMEntrance({ startgame, endgame }) {
         </Button>
       </Box>
     </Container>
-  );
+  )
 }
 
-export default LLMEntrance;
+export default LLMEntrance

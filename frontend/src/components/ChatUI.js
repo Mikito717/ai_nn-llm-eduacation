@@ -9,7 +9,15 @@ import { styled } from '@mui/material/styles'
 import Grid from '@mui/material/Grid'
 import axios from 'axios'
 import { marked } from 'marked'
-import { Typography } from '@mui/material' // 修正箇所
+import {
+  Typography,
+  Menu,
+  MenuItem,
+  IconButton,
+  Select,
+  Snackbar,
+} from '@mui/material'
+import MoreVertIcon from '@mui/icons-material/MoreVert'
 
 // スタイル付きコンポーネントを定義
 const StyledList = styled(List)(({ theme }) => ({
@@ -18,7 +26,7 @@ const StyledList = styled(List)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   color: '#808080',
   maxWidth: '100%',
-  height: '380px',
+  height: '340px',
   overflow: 'auto',
 }))
 
@@ -28,7 +36,6 @@ const InlineListItemText = styled(ListItemText)({
 })
 
 const ChatContainer = styled('div')(({ theme }) => ({
-  // ここにスタイルを追加
   backgroundColor: '#808080',
 }))
 
@@ -40,18 +47,45 @@ const StyledButton = styled(Button)(({ theme }) => ({
   },
 }))
 
-const ChatUI = ({ chatNumber }) => {
+const AnswerButton = styled(Button)(({ theme }) => ({
+  color: '#fff',
+  backgroundColor: theme.palette.secondary.main,
+  '&:hover': {
+    backgroundColor: theme.palette.secondary.dark,
+  },
+}))
+
+const ChatUI = ({ chatNumber, answerSelected, username }) => {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
+  const [resetflag, setResetFlag] = useState(false)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [selectedValue, setSelectedValue] = useState(1)
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
 
   const handleSubmit = async () => {
     try {
+      console.log('resetflag is false')
       setMessages([...messages, { content: inputValue, sender: 'user' }])
+      setInputValue('')
       const response = await axios.post('http://localhost:5000/run_LLM', {
         message: inputValue,
-        chatNumber: chatNumber, // chatNumberを追加
+        chatNumber: chatNumber,
+        resetflag: resetflag,
+        username: username,
       })
-      setInputValue('')
+      if (resetflag) {
+        setResetFlag(false)
+      }
+
       setMessages((prevMessages) => [
         ...prevMessages,
         { content: response.data.message, sender: 'ai' },
@@ -61,6 +95,21 @@ const ChatUI = ({ chatNumber }) => {
     }
   }
 
+  const handleAnswer = () => {
+    console.log('Answer button clicked')
+    console.log('answernumber:', selectedValue)
+    setOpenSnackbar(true)
+    answerSelected(selectedValue)
+  }
+
+  const handleSelectChange = (event) => {
+    setSelectedValue(event.target.value)
+  }
+
+  const handleCloseSnackbar = () => {
+    setOpenSnackbar(false)
+  }
+
   const FlexContainer = styled('div')({
     display: 'flex',
     justifyContent: 'space-between',
@@ -68,21 +117,41 @@ const ChatUI = ({ chatNumber }) => {
     width: '100%',
   })
 
-  const listRef = useRef(null) // リストを参照するためのrefを作成
+  const listRef = useRef(null)
 
   useEffect(() => {
     if (listRef.current) {
-      // リストの末尾にスクロール
       listRef.current.scrollTop = listRef.current.scrollHeight
     }
-  }, [messages]) // messagesが変更されたときにスクロール
+  }, [messages])
+
+  const resetConversation = () => {
+    setMessages([])
+    setResetFlag(true)
+  }
 
   return (
     <ChatContainer>
-      <Typography variant="h6">Here is {chatNumber} room</Typography>
-      <StyledList>
+      <Typography variant="h6">
+        Here is No.<span style={{ color: 'blue' }}>{chatNumber}</span> room
+      </Typography>
+      <StyledList style={{ position: 'relative' }}>
+        <div
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            color: 'rgba(128, 128, 128, 0.3)',
+            fontSize: '5em',
+            fontWeight: 'bold',
+            zIndex: 0,
+          }}
+        >
+          AI
+        </div>
         {messages.map((message, index) => (
-          <div key={index}>
+          <div key={index} style={{ position: 'relative', zIndex: 1 }}>
             <ListItem alignItems="flex-start" style={{ padding: '10px' }}>
               <FlexContainer
                 style={{
@@ -138,6 +207,35 @@ const ChatUI = ({ chatNumber }) => {
       <StyledButton variant="contained" onClick={handleSubmit}>
         送信
       </StyledButton>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <StyledButton variant="contained" onClick={resetConversation}>
+          リセット
+        </StyledButton>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <Select value={selectedValue} onChange={handleSelectChange}>
+          {[
+            { value: 1, label: '言語' },
+            { value: 2, label: '政治' },
+            { value: 3, label: '倫理' },
+            { value: 4, label: '科学' },
+            { value: 5, label: '社会規範' },
+            { value: 6, label: '健康' },
+            { value: 7, label: '冗談' },
+          ].map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </Select>
+        <AnswerButton onClick={handleAnswer}>解答する</AnswerButton>
+      </div>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        message="解答を受け付けました"
+      />
     </ChatContainer>
   )
 }
