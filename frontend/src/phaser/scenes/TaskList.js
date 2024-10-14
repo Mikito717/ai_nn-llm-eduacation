@@ -58,10 +58,6 @@ class TaskList extends Phaser.Scene {
     selectTaskButton.on('pointerover', () => selectTaskButton.setFill('#ff0'))
     selectTaskButton.on('pointerout', () => selectTaskButton.setFill('#fff'))
   }
-
-  update(time, delta) {
-    // Update your scene here
-  }
 }
 
 export default TaskList

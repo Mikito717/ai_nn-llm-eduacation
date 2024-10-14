@@ -14,7 +14,7 @@ def chat_with_openai(prompt, chatnumber, reset_flag, username):
     
     if reset_flag:
         # Create directory if it does not exist
-        user_dir = f"../database/{username}"
+        user_dir = f"../database/userdata/{username}"
         if not os.path.exists(user_dir):
             os.makedirs(user_dir)
         

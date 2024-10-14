@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
 
-const LLMResultUI = ({ finalanswer, correctanswer, onback }) => {
+const LLMResultUI = ({ finalanswer, correctanswer, onback, username }) => {
   const score = finalanswer.filter((v, i) => v === correctanswer[i]).length
   const results = finalanswer.map((v, i) => ({
     text: `${i + 1}: ${v === correctanswer[i] ? '○' : '×'}`,
@@ -19,6 +19,7 @@ const LLMResultUI = ({ finalanswer, correctanswer, onback }) => {
           finalanswer,
           correctanswer,
           score,
+          username,
         }),
       })
       if (!response.ok) {

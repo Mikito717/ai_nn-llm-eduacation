@@ -146,6 +146,11 @@ def receive_LLM_results():
     finalanswer = data.get('finalanswer')
     correctanswer = data.get('correctanswer')
     score = data.get('score')
+    username = data.get('username')
+    
+    #ユーザーネームなどをcsvに保存
+    with open(f'./database/userdata/{username}/LLM_results_data.csv', 'a') as f:
+        f.write(f"{username},{finalanswer},{correctanswer},{score}\n")
     
     # ここでデータを処理します（例：データベースに保存）
     print(f"Final Answer: {finalanswer}")
@@ -153,6 +158,26 @@ def receive_LLM_results():
     print(f"Score: {score}")
     
     return jsonify({"message": "Data received successfully"}), 200
+
+@app.route('/api/quests', methods=['GET'])
+def get_cards():
+    quests = [
+        {
+            "title": "Card 1",
+            "description": "Description for card 1",
+            "rewards": ["Reward 1", "Reward 2"],
+            "buttonColor": "primary",
+            "buttonText": "Accept Quest"
+        },
+        {
+            "title": "Card 2",
+            "description": "Description for card 2",
+            "rewards": ["Reward 3", "Reward 4"],
+            "buttonColor": "secondary",
+            "buttonText": "Accept Quest"
+        }
+    ]
+    return jsonify(quests)
 
 if __name__ == '__main__':
     app.run(debug=True)

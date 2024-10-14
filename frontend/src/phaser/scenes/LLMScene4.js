@@ -12,6 +12,7 @@ class LLMScene4 extends Phaser.Scene {
   init(data) {
     this.finalanswer = data.finalanswer
     this.correctanswer = data.correctanswer
+    this.username = this.registry.get('username')
   }
 
   create() {
@@ -31,6 +32,7 @@ class LLMScene4 extends Phaser.Scene {
           this.shutdown()
           this.scene.start('LLMScene1')
         }}
+        username={this.username}
       />,
     )
 

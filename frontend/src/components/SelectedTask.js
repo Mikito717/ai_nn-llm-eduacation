@@ -1,65 +1,85 @@
 // QuestCard.js
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Card,
   CardContent,
+  Typography,
   CardActions,
   Button,
-  Typography,
 } from '@mui/material'
 
-const SelectedTask = ({ title, description, rewards, onAccept }) => {
-  const [buttonText, setButtonText] = useState('Accept')
-  const [buttonColor, setButtonColor] = useState('primary')
+const SelectedTask = () => {
+  const [cardsData, setCardsData] = useState([])
 
-  const handleClick = () => {
-    setButtonText('Accepted!')
-    setButtonColor('secondary')
-    onAccept()
+  const fetchData = () => {
+    fetch('http://localhost:5000/api/quests') // Flask backend endpoint
+      .then((response) => response.json())
+      .then((data) => setCardsData(data))
+      .catch((error) => console.error('Error fetching data:', error))
   }
 
-  const handleCancel = () => {
-    setButtonText('Accept')
-    setButtonColor('primary')
-  }
+  useEffect(() => {
+    fetchData()
+  }, [])
 
   return (
-    <Card sx={{ maxWidth: 345, margin: 2 }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          {title}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.secondary"
-          sx={{ marginBottom: 2 }}
-        >
-          {description}
-        </Typography>
-        <Typography variant="body1" component="div" sx={{ fontWeight: 'bold' }}>
-          Rewards: {rewards.join(', ')}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button
-          size="small"
-          variant="contained"
-          color={buttonColor}
-          onClick={handleClick}
-        >
-          {buttonText}
-        </Button>
-        <Button
-          size="small"
-          variant="contained"
-          color="default"
-          onClick={handleCancel}
-        >
-          キャンセル
-        </Button>
-      </CardActions>
-    </Card>
+    <div>
+      <Button variant="contained" color="primary" onClick={fetchData}>
+        リロード
+      </Button>
+      {cardsData.map((card, index) => (
+        <Card key={index} sx={{ maxWidth: 345, margin: 2 }}>
+          <CardContent>
+            <Typography variant="h5" component="div">
+              {card.title}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ marginBottom: 2 }}
+            >
+              {card.description}
+            </Typography>
+            <Typography
+              variant="body1"
+              component="div"
+              sx={{ fontWeight: 'bold' }}
+            >
+              Rewards: {card.rewards.join(', ')}
+            </Typography>
+          </CardContent>
+          <CardActions>
+            <Button
+              size="small"
+              variant="contained"
+              color={card.buttonColor}
+              onClick={() => handleClick(card.id)}
+            >
+              {card.buttonText}
+            </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="default"
+              onClick={() => handleCancel(card.id)}
+            >
+              キャンセル
+            </Button>
+          </CardActions>
+        </Card>
+      ))}
+    </div>
   )
+}
+
+const handleClick = (id) => {
+  console.log('Clicked card with id:', id)
+  // Add your click handling logic here
+}
+
+const handleCancel = (id) => {
+  console.log('Cancelled card with id:', id)
+  // Add your cancel handling logic here
 }
 
 export default SelectedTask
