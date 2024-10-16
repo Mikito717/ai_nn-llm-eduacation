@@ -6,18 +6,9 @@ import ListItem from '@mui/material/ListItem'
 import ListItemText from '@mui/material/ListItemText'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
-import Grid from '@mui/material/Grid'
 import axios from 'axios'
 import { marked } from 'marked'
-import {
-  Typography,
-  Menu,
-  MenuItem,
-  IconButton,
-  Select,
-  Snackbar,
-} from '@mui/material'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
+import { Typography, MenuItem, Select, Snackbar } from '@mui/material'
 
 // スタイル付きコンポーネントを定義
 const StyledList = styled(List)(({ theme }) => ({
@@ -25,15 +16,9 @@ const StyledList = styled(List)(({ theme }) => ({
   maxWidth: 2000,
   backgroundColor: theme.palette.background.paper,
   color: '#808080',
-  maxWidth: '100%',
   height: '340px',
   overflow: 'auto',
 }))
-
-const InlineListItemText = styled(ListItemText)({
-  display: 'inline',
-  color: '#808080',
-})
 
 const ChatContainer = styled('div')(({ theme }) => ({
   backgroundColor: '#808080',
@@ -59,21 +44,25 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
   const [resetflag, setResetFlag] = useState(false)
-  const [anchorEl, setAnchorEl] = useState(null)
   const [selectedValue, setSelectedValue] = useState(1)
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-
-  const handleMenuClose = () => {
-    setAnchorEl(null)
-  }
+  console.log(
+    'chatNumber:',
+    chatNumber,
+    'username:',
+    username,
+    'resetflag:',
+    resetflag,
+  )
 
   const handleSubmit = async () => {
     try {
-      console.log('resetflag is false')
+      //messagesが空の場合、resetflagをtrueにする
+      if (messages.length === 0) {
+        setResetFlag(true)
+        console.log('resetflag is true')
+      }
       setMessages([...messages, { content: inputValue, sender: 'user' }])
       setInputValue('')
       const response = await axios.post('http://localhost:5000/run_LLM', {
@@ -81,10 +70,13 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
         chatNumber: chatNumber,
         resetflag: resetflag,
         username: username,
+        isInitialChat: initialchat,
       })
       if (resetflag) {
         setResetFlag(false)
+        console.log('resetflag is false')
       }
+      setInitialChat(false)
 
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -128,6 +120,7 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
   const resetConversation = () => {
     setMessages([])
     setResetFlag(true)
+    handleSubmit()
   }
 
   return (

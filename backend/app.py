@@ -128,11 +128,13 @@ def run_LLM():
     print("start run_LLM")
     data = request.json
     message = data.get('message')
-    chatnumber = data.get('chatnumber')
+    chatnumber = data.get('chatNumber')
     reset_flag = data.get('resetflag')
     username = data.get('username')
+    isInitialchat = data.get('isInitialChat')
+    print(f"message: {message}, chatnumber: {chatnumber}, reset_flag: {reset_flag}, username: {username}, isInitialchat: {isInitialchat}")
     
-    responce=chat_with_openai(message,chatnumber,reset_flag,username)
+    responce=chat_with_openai(message,chatnumber,reset_flag,username,isInitialchat)
 
 
     result = {
@@ -178,6 +180,31 @@ def get_cards():
         }
     ]
     return jsonify(quests)
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    playername = data.get('username')
+    password = data.get('password')
+    isInitialLogin = data.get('initialRegistration')
+    print(playername, password, isInitialLogin)
+    
+        # ユーザーネームに基づいたディレクトリを検索
+    import os
+    if os.path.exists(f'../database/userdata/{playername}'):
+        #passwordを読み込み
+        with open(f'../database/userdata/{playername}/password.txt', 'r') as f:
+            saved_password = f.read()
+        if saved_password != password:
+            return jsonify({"message": "Login failed. Password is Incorrect."}), 401
+        return jsonify({"message": "Login successful","playerName":playername}), 200
+    else:
+    # ユーザーネームに基づいたディレクトリを作成
+        os.makedirs(f'../database/userdata/{playername}', exist_ok=True)
+    #passwordを保存
+        with open(f'../database/userdata/{playername}/password.txt', 'w') as f:
+            f.write(password)
+        return jsonify({"message": "Registry successful","playerName":playername}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

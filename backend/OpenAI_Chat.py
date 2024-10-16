@@ -9,12 +9,19 @@ client = OpenAI(api_key=token)
 # Global variable to store conversation history
 conversation_history = []
 
-def chat_with_openai(prompt, chatnumber, reset_flag, username):
+def chat_with_openai(prompt, chatnumber, reset_flag, username, isInitialchat):
     global conversation_history
+    global conversation_file
+    tmp_list = []
     
-    if reset_flag:
+    if reset_flag :
+        conversation_history = []
+        return None
+        
+    
+    if conversation_history == [] or isInitialchat:
         # Create directory if it does not exist
-        user_dir = f"../database/userdata/{username}"
+        user_dir = f"../database/userdata/{username}/LLM_results_data"
         if not os.path.exists(user_dir):
             os.makedirs(user_dir)
         
@@ -24,10 +31,6 @@ def chat_with_openai(prompt, chatnumber, reset_flag, username):
         if not os.path.exists(conversation_file):
             with open(conversation_file, "w", encoding="utf-8") as f:
                 f.write("")  # Create an empty file
-        
-        # Save conversation history
-        with open(conversation_file, "w", encoding="utf-8") as f:
-            f.write("\n".join([f"{item['role']}: {item['content']}" for item in conversation_history]))
         
         # Read system prompt
         with open(f"./system_prompts/role{chatnumber}_system_prompts.txt", "r", encoding="utf-8") as f:
@@ -40,8 +43,18 @@ def chat_with_openai(prompt, chatnumber, reset_flag, username):
                 "content": f"You are a helpful assistant.{system_prompt}"
             }
         ]
+        tmp_list = [
+            {
+                "role": "system",
+                "content": f"You are a helpful assistant.{system_prompt}"
+            }
+        ]
         
     conversation_history.append({
+        "role": "user",
+        "content": prompt
+    })
+    tmp_list.append({
         "role": "user",
         "content": prompt
     })
@@ -56,6 +69,14 @@ def chat_with_openai(prompt, chatnumber, reset_flag, username):
         "role": "assistant",
         "content": response.choices[0].message.content
     })
+    tmp_list.append({
+        "role": "assistant",
+        "content": response.choices[0].message.content
+    })
+    
+    with open(conversation_file, "a", encoding="utf-8") as f:
+        f.write("\n".join([f"{item['role']}: {item['content']}" for item in tmp_list]))
+
     
     print("response success")
     return response.choices[0].message.content
@@ -66,6 +87,6 @@ if __name__ == "__main__":
         if prompt == "exit":
             break
         reset_flag = input("Reset conversation? (yes/no): ").lower() == 'yes'
-        response = chat_with_openai(prompt, chatnumber=1, reset_flag=reset_flag,username="test")
+        response = chat_with_openai(prompt, chatnumber=4, reset_flag=reset_flag,username="test",isInitialchat=False)
         print(conversation_history)
         print("Response from OpenAI:", response)
