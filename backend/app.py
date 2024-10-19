@@ -131,11 +131,14 @@ def run_LLM():
     chatnumber = data.get('chatNumber')
     reset_flag = data.get('resetflag')
     username = data.get('username')
-    isInitialchat = data.get('isInitialChat')
-    print(f"message: {message}, chatnumber: {chatnumber}, reset_flag: {reset_flag}, username: {username}, isInitialchat: {isInitialchat}")
+    print(f"message: {message}, chatnumber: {chatnumber}, reset_flag: {reset_flag}, username: {username}")
     
-    responce=chat_with_openai(message,chatnumber,reset_flag,username,isInitialchat)
+    responce=chat_with_openai(message,chatnumber,reset_flag,username)
 
+    if responce=="Conversation reset successfully":
+        return jsonify({"message": "Conversation reset successfully"}), 200
+    elif reset_flag:
+        return responce
 
     result = {
         'message': responce
@@ -150,9 +153,24 @@ def receive_LLM_results():
     score = data.get('score')
     username = data.get('username')
     
+    #現在時間を取得
+    from datetime import datetime
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    
+    #会話履歴を保存
+    import glob
+    import os
+    conversation_files = glob.glob(f'./database/userdata/{username}/LLM_results_data/role*_conversation_tmp.txt')
+    for conversation_file in conversation_files:
+        filename=os.path.basename(conversation_file)
+        new_filename = filename.replace("_conversation_tmp.txt", f"_conversation_{current_time}.txt")
+        new_file_path = f'./database/userdata/{username}/LLM_results_data/{new_filename}'
+        os.rename(conversation_file, new_file_path)
+
+    
     #ユーザーネームなどをcsvに保存
     with open(f'./database/userdata/{username}/LLM_results_data.csv', 'a') as f:
-        f.write(f"{username},{finalanswer},{correctanswer},{score}\n")
+        f.write(f"{username},{finalanswer},{correctanswer},{score},{current_time}\n")
     
     # ここでデータを処理します（例：データベースに保存）
     print(f"Final Answer: {finalanswer}")

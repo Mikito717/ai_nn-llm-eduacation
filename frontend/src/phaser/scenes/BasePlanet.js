@@ -27,7 +27,14 @@ class BasePlanet extends Phaser.Scene {
     this.add.image(400, 300, 'base')
 
     // AIの選択ボタンを表示（6個）
-    const buttonNames = ['AI1', 'AI2', 'AI3', 'AI4', 'AI5', 'AI6']
+    const buttonNames = [
+      'K-NN',
+      'ランダムフォレスト',
+      'AI3',
+      'AI4',
+      'AI5',
+      'AI6',
+    ]
     const cols = 2
     const buttonWidth = 300
     const buttonHeight = 100
@@ -55,8 +62,6 @@ class BasePlanet extends Phaser.Scene {
         })
     })
 
-    // AIを選択すると、そのAIの説明が表示される
-    // AIの説明を表示
     //MainMenuへ戻るボタンを表示
     const backButton = this.add
       .text(200, 500, 'MainMenu', {
@@ -93,12 +98,22 @@ class BasePlanet extends Phaser.Scene {
     this.registry.set('baseplanets_blue', this.baseplanets_blue)
 
     //帳尻合わせ
-    this.planets_gold=this.baseplanets_gold
-    this.planets_purple=this.baseplanets_purple
-    this.planets_blue=this.baseplanets_blue
-    this.registry.set('gotplanets_gold',0)
-    this.registry.set('gotplanets_purple',0)
-    this.registry.set('gotplanets_blue',0)
+    this.planets_gold = this.baseplanets_gold
+    this.planets_purple = this.baseplanets_purple
+    this.planets_blue = this.baseplanets_blue
+    this.registry.set('gotplanets_gold', 0)
+    this.registry.set('gotplanets_purple', 0)
+    this.registry.set('gotplanets_blue', 0)
+
+    if (isNaN(this.planets_gold)) {
+      this.planets_gold = 0
+    }
+    if (isNaN(this.planets_purple)) {
+      this.planets_purple = 0
+    }
+    if (isNaN(this.planets_blue)) {
+      this.planets_blue = 0
+    }
 
     //惑星数を表示
     this.add.text(0, 0, `gold: ${this.planets_gold}`, {
@@ -129,12 +144,12 @@ class BasePlanet extends Phaser.Scene {
   showAIDescription(name) {
     //どのAIが選択されているか
     this.selectedAI = name
-    this.scene.launch('AIDescription', { selectedAI: this.selectedAI })
-    this.scene.pause()
-  }
-
-  update() {
-    // ここにフレームごとの更新処理を追加
+    if (this.selectedAI === 'K-NN') {
+      this.scene.launch('AIDescription', { selectedAI: this.selectedAI })
+      this.scene.pause()
+    } else if (this.selectedAI === 'ランダムフォレスト') {
+      this.scene.start('RF_paramator')
+    }
   }
 }
 

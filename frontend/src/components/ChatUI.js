@@ -7,7 +7,7 @@ import ListItemText from '@mui/material/ListItemText'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import axios from 'axios'
-import { marked } from 'marked'
+import { marked, use } from 'marked'
 import { Typography, MenuItem, Select, Snackbar } from '@mui/material'
 
 // スタイル付きコンポーネントを定義
@@ -43,24 +43,46 @@ const AnswerButton = styled(Button)(({ theme }) => ({
 const ChatUI = ({ chatNumber, answerSelected, username }) => {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
-  const [resetflag, setResetFlag] = useState(false)
   const [selectedValue, setSelectedValue] = useState(1)
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
-  console.log(
-    'chatNumber:',
-    chatNumber,
-    'username:',
-    username,
-    'resetflag:',
-    resetflag,
-  )
+  console.log('chatNumber:', chatNumber, 'username:', username)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/run_LLM', {
+          chatNumber: chatNumber,
+          username: username,
+          resetflag: true,
+        })
+
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          {
+            content: response.data.message,
+            sender:
+              response.data.role === 'system'
+                ? 'ai'
+                : response.data.role === 'assistant'
+                ? 'ai'
+                : response.data.role === 'user'
+                ? 'user'
+                : 'ai',
+          },
+        ])
+      } catch (error) {
+        console.error('初期データの取得エラー:', error)
+      }
+    }
+
+    fetchData()
+  }, []) // 空の依存配列を渡すことで、コンポーネントのマウント時に1度だけ実行される
 
   const handleSubmit = async () => {
     try {
       //messagesが空の場合、resetflagをtrueにする
       if (messages.length === 0) {
-        setResetFlag(true)
         console.log('resetflag is true')
       }
       setMessages([...messages, { content: inputValue, sender: 'user' }])
@@ -68,15 +90,8 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
       const response = await axios.post('http://localhost:5000/run_LLM', {
         message: inputValue,
         chatNumber: chatNumber,
-        resetflag: resetflag,
         username: username,
-        isInitialChat: initialchat,
       })
-      if (resetflag) {
-        setResetFlag(false)
-        console.log('resetflag is false')
-      }
-      setInitialChat(false)
 
       setMessages((prevMessages) => [
         ...prevMessages,
@@ -116,12 +131,6 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
       listRef.current.scrollTop = listRef.current.scrollHeight
     }
   }, [messages])
-
-  const resetConversation = () => {
-    setMessages([])
-    setResetFlag(true)
-    handleSubmit()
-  }
 
   return (
     <ChatContainer>
@@ -200,11 +209,7 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
       <StyledButton variant="contained" onClick={handleSubmit}>
         送信
       </StyledButton>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <StyledButton variant="contained" onClick={resetConversation}>
-          リセット
-        </StyledButton>
-      </div>
+
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Select value={selectedValue} onChange={handleSelectChange}>
           {[

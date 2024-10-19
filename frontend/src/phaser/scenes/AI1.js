@@ -2,7 +2,7 @@ import Phaser from 'phaser'
 
 class AI1 extends Phaser.Scene {
   constructor() {
-    super({ key: 'AI1' }) //ここでは、K-NNを選択した場合の処理を記述
+    super({ key: 'K-NN' }) //ここでは、K-NNを選択した場合の処理を記述
   }
   preload() {
     //送信データの読み込み
