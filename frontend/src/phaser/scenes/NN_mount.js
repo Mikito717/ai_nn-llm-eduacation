@@ -5,7 +5,7 @@ import NNUI from '../../components/NeuralNetwork_UI'
 
 class NN_mount extends Phaser.Scene {
   constructor() {
-    super({ key: NN_mount })
+    super({ key: 'NN_mount' })
     this.container = null // DOMコンテナの参照を保持
   }
 

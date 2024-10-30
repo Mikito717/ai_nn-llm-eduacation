@@ -5,8 +5,9 @@ import SVM_UI from '../../components/SVM_UI'
 
 class SVM_paramator extends Phaser.Scene {
   constructor() {
-    super({ key: SVM_paramator })
+    super({ key: 'SVM_paramator' })
     this.container = null // DOMコンテナの参照を保持
+    this.handleback = this.handleback.bind(this)
   }
 
   create() {
@@ -17,11 +18,16 @@ class SVM_paramator extends Phaser.Scene {
     document.body.appendChild(this.container)
 
     // Mount the React component
-    const root = createRoot(this.container)
-    root.render(<SVM_UI />)
+    this.root = createRoot(this.container)
+    this.root.render(<SVM_UI back={this.handleback} />)
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
+  }
+
+  handleback() {
+    this.shutdown()
+    this.scene.start('BasePlanet')
   }
 
   updateContainerPosition() {

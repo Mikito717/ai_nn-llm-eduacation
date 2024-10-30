@@ -5,7 +5,7 @@ import RF_UI from '../../components/RF_UI'
 
 class RF_paramator extends Phaser.Scene {
   constructor() {
-    super({ key: RF_paramator })
+    super({ key: 'RF_paramator' })
     this.container = null // DOMコンテナの参照を保持
   }
 

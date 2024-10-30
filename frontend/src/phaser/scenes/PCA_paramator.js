@@ -5,7 +5,7 @@ import PCA_UI from '../../components/PCA_UI'
 
 class PCA_paramator extends Phaser.Scene {
   constructor() {
-    super({ key: PCA_paramator })
+    super({ key: 'PCA_paramator' })
     this.container = null // DOMコンテナの参照を保持
   }
 

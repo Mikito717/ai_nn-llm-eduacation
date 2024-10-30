@@ -5,7 +5,7 @@ import PCAResult from '../../components/PCA_result'
 
 class PCA_result_mount extends Phaser.Scene {
   constructor() {
-    super({ key: PCA_result_mount })
+    super({ key: 'PCA_result_mount' })
     this.container = null // DOMコンテナの参照を保持
   }
 

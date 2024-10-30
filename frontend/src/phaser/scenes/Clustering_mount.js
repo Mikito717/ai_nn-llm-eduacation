@@ -5,7 +5,7 @@ import ClusteringUI from '../../components/Clustering_UI'
 
 class Clustering_mount extends Phaser.Scene {
   constructor() {
-    super({ key: Clustering_mount })
+    super({ key: 'Clustering_mount' })
     this.container = null // DOMコンテナの参照を保持
   }
 

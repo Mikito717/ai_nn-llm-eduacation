@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@mui/material'
 
-const SVM_UI = () => {
+const SVM_UI = ({ back }) => {
   const [kernel, setKernel] = useState('linear')
   const [C, setC] = useState(1.0)
   const [gamma, setGamma] = useState('scale')
@@ -22,6 +22,9 @@ const SVM_UI = () => {
 
   const handleGammaChange = (event) => {
     setGamma(event.target.value)
+  }
+  const handleback = () => {
+    back()
   }
 
   const handleSubmit = (event) => {
@@ -38,7 +41,13 @@ const SVM_UI = () => {
         SVM Hyperparameter Settings
       </Typography>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div
+          style={{
+            color: 'white',
+            backgroundColor: 'skyblue',
+            borderRadius: '10px',
+          }}
+        >
           <TextField
             select
             label="Kernel"
@@ -54,7 +63,7 @@ const SVM_UI = () => {
             <MenuItem value="sigmoid">Sigmoid</MenuItem>
           </TextField>
         </div>
-        <div>
+        <div style={{ backgroundColor: 'skyblue', borderRadius: '10px' }}>
           <TextField
             label="C"
             type="number"
@@ -66,7 +75,7 @@ const SVM_UI = () => {
             inputProps={{ step: 0.1 }}
           />
         </div>
-        <div>
+        <div style={{ backgroundColor: 'skyblue', borderRadius: '10px' }}>
           <TextField
             select
             label="Gamma"
@@ -84,6 +93,9 @@ const SVM_UI = () => {
           Submit
         </Button>
       </form>
+      <div>
+        <button onClick={handleback}>Back</button>
+      </div>
     </Container>
   )
 }

@@ -16,6 +16,12 @@ import LLMScene2 from '../scenes/LLMScene2'
 import SelectedTaskp from '../scenes/SelectedTask-ph'
 import LLMScene3 from '../scenes/LLMScene3'
 import LLMScene4 from '../scenes/LLMScene4'
+import Clustering_mount from '../scenes/Clustering_mount'
+import NN_mount from '../scenes/NN_mount'
+import PCA_paramator from '../scenes/PCA_paramator'
+import PCA_result_mount from '../scenes/PCA_result_mount'
+import SVM_paramator from '../scenes/SVM_paramator'
+import RF_paramator from '../scenes/RF_paramator'
 
 const config = {
   type: Phaser.AUTO,
@@ -40,12 +46,18 @@ const config = {
     DataSelect,
     TaskList,
     CreateTask,
-    PreprocessData,
     LLMScene1,
     LLMScene2,
     SelectedTaskp,
     LLMScene3,
     LLMScene4,
+    Clustering_mount,
+    NN_mount,
+    PCA_paramator,
+    PCA_result_mount,
+    PreprocessData,
+    SVM_paramator,
+    RF_paramator,
   ],
 }
 

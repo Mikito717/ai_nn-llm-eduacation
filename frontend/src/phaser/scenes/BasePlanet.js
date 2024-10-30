@@ -30,10 +30,11 @@ class BasePlanet extends Phaser.Scene {
     const buttonNames = [
       'K-NN',
       'ランダムフォレスト',
-      'AI3',
-      'AI4',
-      'AI5',
-      'AI6',
+      'SVM',
+      'Preprocessing',
+      'PCA',
+      'K-means',
+      'NN',
     ]
     const cols = 2
     const buttonWidth = 300
@@ -149,6 +150,16 @@ class BasePlanet extends Phaser.Scene {
       this.scene.pause()
     } else if (this.selectedAI === 'ランダムフォレスト') {
       this.scene.start('RF_paramator')
+    } else if (this.selectedAI === 'SVM') {
+      this.scene.start('SVM_paramator')
+    } else if (this.selectedAI === 'Preprocessing') {
+      this.scene.start('PreprocessingData')
+    } else if (this.selectedAI === 'PCA') {
+      this.scene.start('PCA_paramator')
+    } else if (this.selectedAI === 'K-means') {
+      this.scene.start('Clustering_mount')
+    } else if (this.selectedAI === 'NN') {
+      this.scene.start('NN_mount')
     }
   }
 }
