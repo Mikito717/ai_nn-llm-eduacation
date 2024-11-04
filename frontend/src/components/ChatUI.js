@@ -40,6 +40,15 @@ const AnswerButton = styled(Button)(({ theme }) => ({
   },
 }))
 
+// 例: marked関数を使用する部分
+const renderMarkdown = (input) => {
+  if (!input) {
+    console.error('marked(): input parameter is undefined or null')
+    return ''
+  }
+  return marked(input)
+}
+
 const ChatUI = ({ chatNumber, answerSelected, username }) => {
   const [messages, setMessages] = useState([])
   const [inputValue, setInputValue] = useState('')
@@ -93,9 +102,12 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
         username: username,
       })
 
+      const aiMessage = response.data.message
+      const renderedMessage = renderMarkdown(aiMessage)
+
       setMessages((prevMessages) => [
         ...prevMessages,
-        { content: response.data.message, sender: 'ai' },
+        { content: renderedMessage, sender: 'ai' },
       ])
     } catch (error) {
       console.error('メッセージの送信エラー:', error)
@@ -179,7 +191,9 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
                     message.sender === 'ai' ? (
                       <span
                         dangerouslySetInnerHTML={{
-                          __html: marked(message.content),
+                          __html: message.content
+                            ? marked(message.content)
+                            : '',
                         }}
                       />
                     ) : (

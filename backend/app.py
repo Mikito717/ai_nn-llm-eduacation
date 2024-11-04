@@ -133,10 +133,10 @@ def run_LLM():
     username = data.get('username')
     print(f"message: {message}, chatnumber: {chatnumber}, reset_flag: {reset_flag}, username: {username}")
     
-    responce=chat_with_openai(message,chatnumber,reset_flag,username)
+    responce=chat_with_openai(message,chatnumber,username,reset_flag)
 
     if responce=="Conversation reset successfully":
-        return jsonify({"message": "Conversation reset successfully"}), 200
+        return  200
     elif reset_flag:
         return responce
 

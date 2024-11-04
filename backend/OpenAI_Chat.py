@@ -14,9 +14,10 @@ def chat_with_openai(prompt, chatnumber, username,reset_flag=False):
     global conversation_file
     tmp_list = []
     
+    # Create directory if it does not exist
+    user_dir = f"../database/userdata/{username}/LLM_results_data"
     if reset_flag :
-        # Create directory if it does not exist
-        user_dir = f"../database/userdata/{username}/LLM_results_data"
+
         if not os.path.exists(user_dir):
             os.makedirs(user_dir)
             
