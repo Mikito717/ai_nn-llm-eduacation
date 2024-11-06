@@ -1,0 +1,11 @@
+[
+  {
+    "taskName": "test",
+    "device": "CPU",
+    "memory": "1GB",
+    "selectedAI": "ai1",
+    "accuracy": "90",
+    "taskDescription": "test",
+    "rewards": ["100"]
+  }
+]

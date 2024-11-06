@@ -4,6 +4,8 @@ import k_nn
 import numpy as np
 import torch
 from OpenAI_Chat import chat_with_openai 
+import json
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -179,25 +181,30 @@ def receive_LLM_results():
     
     return jsonify({"message": "Data received successfully"}), 200
 
+def read_json_file(file_path):
+    if os.path.exists(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+        return data
+    else:
+        return None 
+        
 @app.route('/api/quests', methods=['GET'])
 def get_cards():
-    quests = [
-        {
-            "title": "Card 1",
-            "description": "Description for card 1",
-            "rewards": ["Reward 1", "Reward 2"],
-            "buttonColor": "primary",
-            "buttonText": "Accept Quest"
-        },
-        {
-            "title": "Card 2",
-            "description": "Description for card 2",
-            "rewards": ["Reward 3", "Reward 4"],
-            "buttonColor": "secondary",
-            "buttonText": "Accept Quest"
-        }
-    ]
+
+    file_path='../database/task/default_task/default_tasks.json'   
+    quests = read_json_file(file_path)
+    if quests is None:
+        return jsonify({"message": "No quests found"}), 404
     return jsonify(quests)
+
+@app.route('/api/quests', methods=['POST'])
+def post_cards():
+    data = request.get_json()
+    file_path='../database/task/created_task/created_task.json'   
+    with open(file_path, 'a') as f:
+        json.dump(data, f, indent=4)
+    return jsonify({"message": "Data received successfully"}), 200
 
 @app.route('/api/login', methods=['POST'])
 def login():

@@ -6,6 +6,7 @@ function TaskCreator({ onSubmitTask, onSelectAI, onBack }) {
   const [device, setDevice] = useState('')
   const [memory, setMemory] = useState('')
   const [accuracy, setAccuracy] = useState('')
+  const [taskDescription, setTaskDescription] = useState('')
 
   const handleaccuracyChange = (event) => {
     setAccuracy(event.target.value)
@@ -18,8 +19,29 @@ function TaskCreator({ onSubmitTask, onSelectAI, onBack }) {
   const handleDeviceChange = (event) => {
     setDevice(event.target.value)
   }
-  const handleTaskSubmit = () => {
+  const handleTaskSubmit = async () => {
     if (onSubmitTask) onSubmitTask(taskName)
+
+    const response = await fetch('http://localhost:5000/api/quests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        taskName: taskName,
+        device: device,
+        memory: memory,
+        selectedAI: selectedAI,
+        accuracy: accuracy,
+        taskDescription: taskDescription,
+      }),
+    })
+
+    if (response.ok) {
+      console.log('Task submitted successfully')
+    } else {
+      console.error('Failed to submit task')
+    }
   }
 
   const handleAIChange = (event) => {
@@ -59,6 +81,8 @@ function TaskCreator({ onSubmitTask, onSelectAI, onBack }) {
           height: '100px',
           marginBottom: '10px',
         }}
+        value={taskDescription}
+        onChange={(e) => setTaskDescription(e.target.value)}
       />
       <br />
       <select

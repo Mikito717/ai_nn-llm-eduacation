@@ -1,14 +1,15 @@
 // QuestCard.js
 import React, { useEffect, useState } from 'react'
 import {
+  Box,
+  Button,
   Card,
   CardContent,
-  Typography,
   CardActions,
-  Button,
+  Typography,
 } from '@mui/material'
 
-const SelectedTask = () => {
+const SelectedTask = ({ handleback }) => {
   const [cardsData, setCardsData] = useState([])
 
   const fetchData = () => {
@@ -23,30 +24,94 @@ const SelectedTask = () => {
   }, [])
 
   return (
-    <div>
+    <div
+      style={{
+        width: '680px',
+        height: '550px',
+        position: 'relative',
+        overflow: 'auto',
+      }}
+    >
+      <Box position="absolute" top={0} right={150}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleback()}
+        >
+          Back Button
+        </Button>
+      </Box>
       <Button variant="contained" color="primary" onClick={fetchData}>
         リロード
       </Button>
       {cardsData.map((card, index) => (
-        <Card key={index} sx={{ maxWidth: 345, margin: 2 }}>
+        <Card key={index} sx={{ maxWidth: 600, margin: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div">
               {card.title}
             </Typography>
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ marginBottom: 2 }}
-            >
+            <Typography sx={{ marginBottom: 2, color: 'blue' }}>
               {card.description}
             </Typography>
             <Typography
               variant="body1"
               component="div"
-              sx={{ fontWeight: 'bold' }}
+              sx={{ fontWeight: 'bold', color: 'green' }}
             >
               Rewards: {card.rewards.join(', ')}
             </Typography>
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{ fontWeight: 'bold', color: 'red' }}
+            >
+              Task Name: {card.taskName}
+            </Typography>
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{ fontWeight: 'bold', color: 'purple' }}
+            >
+              Device: {card.device}
+            </Typography>
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{ fontWeight: 'bold', color: 'orange' }}
+            >
+              Memory: {card.memory}
+            </Typography>
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{ fontWeight: 'bold', color: 'brown' }}
+            >
+              Selected AI: {card.selectedAI}
+            </Typography>
+            <Typography
+              variant="body2"
+              component="div"
+              sx={{ fontWeight: 'bold', color: 'blue' }}
+            >
+              Accuracy: {card.accuracy}
+            </Typography>
+            <Box
+              sx={{
+                maxHeight: 100,
+                overflow: 'auto',
+                backgroundColor: 'lightgrey',
+                padding: 1,
+                borderRadius: 1,
+              }}
+            >
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{ color: 'grey' }}
+              >
+                Task Description: {card.taskDescription}
+              </Typography>
+            </Box>
           </CardContent>
           <CardActions>
             <Button
@@ -55,7 +120,7 @@ const SelectedTask = () => {
               color={card.buttonColor}
               onClick={() => handleClick(card.id)}
             >
-              {card.buttonText}
+              Accept
             </Button>
             <Button
               size="small"

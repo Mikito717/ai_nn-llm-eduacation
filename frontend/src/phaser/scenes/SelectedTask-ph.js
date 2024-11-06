@@ -6,8 +6,8 @@ import SelectedTask from '../../components/SelectedTask'
 class SelectedTaskp extends Phaser.Scene {
   constructor() {
     super({ key: 'SelectedTaskp' })
-
     this.container = null // DOMコンテナの参照を保持
+    this.root = null // Reactルートの参照を保持
   }
 
   create() {
@@ -17,24 +17,9 @@ class SelectedTaskp extends Phaser.Scene {
     this.updateContainerPosition() // 初期位置を設定
     document.body.appendChild(this.container)
 
-    // Assuming title, description, rewards, and onAccept are defined somewhere in your code
-    const title = 'Sample Title'
-    const description = 'Sample Description'
-    const rewards = ['Reward1', 'Reward2']
-    const onAccept = () => {
-      console.log('Accepted')
-    }
-
-    const root = createRoot(this.container)
-
-    root.render(
-      <SelectedTask
-        title={title}
-        description={description}
-        rewards={rewards}
-        onAccept={onAccept}
-      />,
-    )
+    // Mount the React component
+    this.root = createRoot(this.container)
+    this.root.render(<SelectedTask handleback={this.handleback.bind(this)} />)
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
@@ -48,14 +33,23 @@ class SelectedTaskp extends Phaser.Scene {
     this.container.style.top = `${canvas.top + 20}px`
   }
 
+  handleback() {
+    console.log('back')
+    this.shutdown()
+    this.scene.start('TaskList')
+  }
+
   shutdown() {
     // シーンがシャットダウンするときにReactコンポーネントをクリーンアップ
+    if (this.root) {
+      console.log('unmounting')
+      this.root.unmount()
+    }
     if (this.container) {
-      const root = createRoot(this.container)
-      root.unmount()
       document.body.removeChild(this.container)
       this.container = null // 参照をクリア
     }
+    console.log('shutdown')
     // メモリリークを防ぐためにイベントリスナーを削除
     window.removeEventListener(
       'resize',
