@@ -25,3 +25,13 @@ yarn-error.log*
 
 #./backend/databaseを追加
 ./backend/database
+
+# Python virtual environment
+myenv/
+
+# Node modules
+node_modules/
+
+# その他の無視するファイルやディレクトリ
+.DS_Store
+*.log
