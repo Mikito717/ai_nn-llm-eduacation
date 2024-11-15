@@ -8,11 +8,11 @@ class MainMenu extends Phaser.Scene {
   create() {
     // メインメニューのタイトル
     this.add
-      .text(400, 100, 'メインメニュー', { fontSize: '32px', color: '#fff' })
+      .text(400, 100, 'MainMenu', { fontSize: '32px', color: '#fff' })
       .setOrigin(0.5)
 
     // ゲームモードのボタン
-    const gameModes = ['game', 'BasePlanet', 'タスク', 'LLM']
+    const gameModes = ['Space', 'BasePlanet', 'Task', 'LLM']
     gameModes.forEach((mode, index) => {
       const button = this.add
         .text(400, 200 + index * 50, mode, { fontSize: '24px', color: '#fff' })
@@ -25,13 +25,13 @@ class MainMenu extends Phaser.Scene {
   }
 
   selectMode(mode) {
-    if (mode === 'game') {
+    if (mode === 'Space') {
       this.scene.start('GameScene0') // game シーンへ遷移
     }
     if (mode === 'BasePlanet') {
       this.scene.start('BasePlanet') // BasePlanet シーンへ遷移
     }
-    if (mode === 'タスク') {
+    if (mode === 'Task') {
       this.scene.start('TaskList') // BasePlanet シーンへ遷移
     }
     if (mode === 'LLM') {

@@ -17,10 +17,10 @@ const LLMSelectionUI = ({ onchange, goback, currentanswer, gotoresult }) => {
   }
 
   const handleSubmit = () => {
-    const isConfirmed = window.confirm('本当に提出しますか？')
+    const isConfirmed = window.confirm('Do you really want to submit it?')
     if (isConfirmed) {
       // 提出のロジックをここに追加
-      console.log('提出が確認されました')
+      console.log('Submission confirmed.')
       setSnackbarOpen(true)
       gotoresult()
     }
@@ -36,21 +36,21 @@ const LLMSelectionUI = ({ onchange, goback, currentanswer, gotoresult }) => {
     }
 
     const answerLabels = {
-      '-1': '未回答',
-      1: '言語',
-      2: '政治',
-      3: '倫理',
-      4: '科学',
-      5: '社会規範',
-      6: '健康',
-      7: '冗談',
+      '-1': 'unanswered',
+      1: 'Language.',
+      2: 'politics',
+      3: 'ethics',
+      4: 'science',
+      5: 'social norm',
+      6: 'health',
+      7: 'joke',
     }
 
     const validAnswers = currentanswer.slice(0, 6)
     if (validAnswers.length > 0) {
       return (
         <div>
-          <p>現在の解答:</p>
+          <p>Current answers:</p>
           <ul style={{ display: 'flex', listStyleType: 'none', padding: 0 }}>
             {validAnswers.map((answer, index) => (
               <li key={index} style={{ marginRight: '10px' }}>
@@ -116,7 +116,7 @@ const LLMSelectionUI = ({ onchange, goback, currentanswer, gotoresult }) => {
           marginRight: '10px', // Add margin to the right
         }}
       >
-        前画面に戻る
+        Back
       </button>
       <button
         onClick={() => handleSubmit()}
@@ -133,7 +133,7 @@ const LLMSelectionUI = ({ onchange, goback, currentanswer, gotoresult }) => {
           width: '150px',
         }}
       >
-        解答提出
+        Submit
       </button>
 
       {/* Snackbar */}
@@ -147,23 +147,24 @@ const LLMSelectionUI = ({ onchange, goback, currentanswer, gotoresult }) => {
           severity="success"
           sx={{ width: '100%' }}
         >
-          提出が確認されました
+          Submission confirmed.
         </MuiAlert>
       </Snackbar>
 
       <div>
-        <h1>ルール説明</h1>
-        <p>1. 6つのボタンから1つを選択してください。</p>
-        <p>2. 選択したLLMとの対話が始まります。</p>
+        <h1>Rule Description.</h1>
+        <p>1. Select one of the six buttons.</p>
+        <p>2. The dialogue with the selected LLM begins.</p>
         <p>
-          3. これらのLLMは以下のいずれかのバイアスをもっています。
+          3. These LLMs have one of the following biases
           <br />
-          その嘘を見抜き、どのLLMがどのバイアスをもっているか選んでください。
+          Spot the lies and choose which LLMs have which bias.
         </p>
         <p>
-          バイアス集
+          bias collection
           <br />
-          A:言語,B:政治,C:倫理,D:科学,E:社会規範,F:健康,G:冗談
+          A: Language, B: Politics, C: Ethics, D: Science, E: Social norms, F:
+          Health, G: Jokes
         </p>
       </div>
     </>

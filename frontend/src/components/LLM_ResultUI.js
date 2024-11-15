@@ -52,10 +52,10 @@ const LLMResultUI = ({ finalanswer, correctanswer, onback, username }) => {
         gutterBottom
         style={{ color: '#3f51b5' }}
       >
-        ゲームのスコア
+        Game scores
       </Typography>
       <Typography variant="h4" component="p" style={{ color: 'green' }}>
-        あなたのスコアは
+        Your score is.
         <span style={{ color: '#ff4081' }}>{score}</span>
       </Typography>
       <Box mt={2} display="flex" flexWrap="wrap" justifyContent="center">
@@ -89,7 +89,7 @@ const LLMResultUI = ({ finalanswer, correctanswer, onback, username }) => {
           onMouseOver={(e) => (e.target.style.backgroundColor = 'darkgreen')}
           onMouseOut={(e) => (e.target.style.backgroundColor = 'green')}
         >
-          最初に戻る
+          Back to the beginning
         </button>
       </Typography>
     </Box>

@@ -213,7 +213,7 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
       </StyledList>
       <TextField
         id="standard-basic"
-        label="メッセージを入力"
+        label="Enter message."
         fullWidth
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -221,32 +221,32 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
         InputProps={{ style: { color: '#000', backgroundColor: '#FFFFF' } }}
       />
       <StyledButton variant="contained" onClick={handleSubmit}>
-        送信
+        Submit
       </StyledButton>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <Select value={selectedValue} onChange={handleSelectChange}>
           {[
-            { value: 1, label: '言語' },
-            { value: 2, label: '政治' },
-            { value: 3, label: '倫理' },
-            { value: 4, label: '科学' },
-            { value: 5, label: '社会規範' },
-            { value: 6, label: '健康' },
-            { value: 7, label: '冗談' },
+            { value: 1, label: 'Language' },
+            { value: 2, label: 'Politics' },
+            { value: 3, label: 'Ethics' },
+            { value: 4, label: 'Science' },
+            { value: 5, label: 'Social norm' },
+            { value: 6, label: 'Health' },
+            { value: 7, label: 'Joke' },
           ].map((option) => (
             <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
         </Select>
-        <AnswerButton onClick={handleAnswer}>解答する</AnswerButton>
+        <AnswerButton onClick={handleAnswer}>Answer</AnswerButton>
       </div>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleCloseSnackbar}
-        message="解答を受け付けました"
+        message="Answers accepted."
       />
     </ChatContainer>
   )

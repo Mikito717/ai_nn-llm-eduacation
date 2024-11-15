@@ -13,11 +13,12 @@ function LLMEntrance({ startgame, endgame }) {
       </Typography>
       <Box mt={4}>
         <Typography variant="h5" component="h2" gutterBottom>
-          ルール説明
+          Rule Description.
         </Typography>
         <Typography variant="body2" paragraph>
-          このゲームでは、変わったLLMが6個出現しています。これらのLLMはそれぞれに独立で、互いのことを知りません。
-          あなたは、これらのLLMに質問をして、どのLLMが何のバイアスを持っているかを当てるゲームです。
+          Six unusual LLMs appear in this game. These LLMs are independent of
+          each other and do not know each other. You ask these LLMs questions
+          and try to guess which LLM has what bias.
         </Typography>
       </Box>
       <Box mt={4}>
