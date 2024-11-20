@@ -1,0 +1,24 @@
+﻿name: soturon
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - blinker
+  - click
+  - colorama
+  - flask
+  - flask-cors
+  - itsdangerous
+  - jinja2
+  - markupsafe
+  - werkzeug
+  - scikit-learn
+  - numpy
+  - pandas
+  - scikit-image
+  - torchvision
+  - matplotlib
+  - pillow
+  - pip
+  - pip:
+      - opencv-python
