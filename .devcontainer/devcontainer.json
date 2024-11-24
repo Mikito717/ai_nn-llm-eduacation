@@ -1,0 +1,17 @@
+{
+  "name": "ai_nn-llm-eduacation",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+    }
+  },
+  "forwardPorts": [3000],
+  "postCreateCommand": "npm install && python3 -m venv myenv",
+  "remoteUser": "node"
+}
