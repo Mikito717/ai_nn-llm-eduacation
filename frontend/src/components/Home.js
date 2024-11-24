@@ -1,5 +1,4 @@
 import React from 'react'
-import Phaser from 'phaser'
 
 function Home({ startGame }) {
   return (

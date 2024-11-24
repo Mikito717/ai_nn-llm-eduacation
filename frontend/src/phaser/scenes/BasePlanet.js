@@ -12,9 +12,6 @@ class BasePlanet extends Phaser.Scene {
     this.planets_gold = 0
     this.planets_purple = 0
     this.planets_blue = 0
-    this.baseplanets_gold = 0
-    this.baseplanets_purple = 0
-    this.baseplanets_blue = 0
   }
 
   preload() {
@@ -23,13 +20,28 @@ class BasePlanet extends Phaser.Scene {
   }
 
   create() {
+    //flaskから取得したユーザー名を取得
+    fetch('http://localhost:5000/api/get_planet_number', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: this.registry.get('username') }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.data = data[0].trim().split(',')
+        this.planets_gold = parseInt(this.data[0], 10) || 0
+        this.planets_purple = parseInt(this.data[1], 10) || 0
+        this.planets_blue = parseInt(this.data[2], 10) || 0
+      })
     // basestation.jpgを表示
     this.add.image(400, 300, 'base')
 
     // AIの選択ボタンを表示（6個）
     const buttonNames = [
       'K-NN',
-      'ランダムフォレスト',
+      'RF',
       'SVM',
       'Preprocessing',
       'PCA',
@@ -79,43 +91,8 @@ class BasePlanet extends Phaser.Scene {
       .on('pointerout', () => {
         backButton.setStyle({ fill: '#fff', backgroundColor: '#000' })
       })
-
-    //保存した惑星数を取得
-    this.baseplanets_gold = this.registry.get('baseplanets_gold')
-    this.baseplanets_purple = this.registry.get('baseplanets_purple')
-    this.baseplanets_blue = this.registry.get('baseplanets_blue')
-    this.planets_gold = this.registry.get('gotplanets_gold')
-    this.planets_purple = this.registry.get('gotplanets_purple')
-    this.planets_blue = this.registry.get('gotplanets_blue')
-
-    //惑星数を更新
-    this.baseplanets_gold += this.planets_gold
-    this.baseplanets_purple += this.planets_purple
-    this.baseplanets_blue += this.planets_blue
-
-    //惑星を保存
-    this.registry.set('baseplanets_gold', this.baseplanets_gold)
-    this.registry.set('baseplanets_purple', this.baseplanets_purple)
-    this.registry.set('baseplanets_blue', this.baseplanets_blue)
-
-    //帳尻合わせ
-    this.planets_gold = this.baseplanets_gold
-    this.planets_purple = this.baseplanets_purple
-    this.planets_blue = this.baseplanets_blue
-    this.registry.set('gotplanets_gold', 0)
-    this.registry.set('gotplanets_purple', 0)
-    this.registry.set('gotplanets_blue', 0)
-
-    if (isNaN(this.planets_gold)) {
-      this.planets_gold = 0
-    }
-    if (isNaN(this.planets_purple)) {
-      this.planets_purple = 0
-    }
-    if (isNaN(this.planets_blue)) {
-      this.planets_blue = 0
-    }
-
+  }
+  update() {
     //惑星数を表示
     this.add.text(0, 0, `gold: ${this.planets_gold}`, {
       fontSize: '30px',
@@ -135,11 +112,6 @@ class BasePlanet extends Phaser.Scene {
       backgroundColor: '#000',
       padding: { x: 10, y: 5 },
     })
-
-    //貯蔵した惑星数をストレージに保管
-    localStorage.setItem('planets_gold', this.planets_gold)
-    localStorage.setItem('planets_purple', this.planets_purple)
-    localStorage.setItem('planets_blue', this.planets_blue)
   }
 
   showAIDescription(name) {

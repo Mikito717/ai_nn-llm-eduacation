@@ -1,0 +1,11 @@
+[
+  {
+    "taskName": "犬と猫の識別",
+    "device": "CPU",
+    "memory": "1GB",
+    "selectedAI": "K-NN",
+    "accuracy": "90",
+    "taskDescription": "最近ペットの子たちが増えてきて犬と猫を飼っているのだけれど、その見分けがつないんだ。だから、それを見分けられるAIを作ってくれないか？",
+    "rewards": ["100"]
+  }
+]

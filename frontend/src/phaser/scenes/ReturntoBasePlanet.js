@@ -7,7 +7,6 @@ class ReturntoBasePlanet extends Phaser.Scene {
     this.planets_purple = 0
     this.planets_blue = 0
   }
-  preload() {}
   create() {
     //オーバーレイ背景（グレー）を作成する
     this.add.rectangle(0, 0, 800, 600, 0x000000, 0.5).setOrigin(0, 0)
@@ -21,18 +20,34 @@ class ReturntoBasePlanet extends Phaser.Scene {
       .setOrigin(0.5)
     returnButton.setInteractive()
     returnButton.on('pointerdown', () => {
-      this.scene.start('BasePlanet')
-      /*this.events.emit('gotplanets2', {
-      /  gold: this.planets_gold,
-        purple: this.planets_purple,
-        blue: this.planets_blue,
-      })*/
-     this.planets_gold=this.registry.get('gotplanets_gold')
-      this.planets_purple=this.registry.get('gotplanets_purple')
-      this.planets_blue=this.registry.get('gotplanets_blue')
-      
+      this.planets_gold = this.registry.get('gotplanets_gold')
+      this.planets_purple = this.registry.get('gotplanets_purple')
+      this.planets_blue = this.registry.get('gotplanets_blue')
+      this.username = this.registry.get('username')
+
+      fetch('http://localhost:5000/api/set_planet_number', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user: this.username,
+          gold: this.planets_gold,
+          purple: this.planets_purple,
+          blue: this.planets_blue,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('Success:', data)
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
+
       this.scene.stop('ReturntoBasePlanet')
       this.scene.stop('GameScene0')
+      this.scene.start('BasePlanet')
     })
     const continueButton = this.add
       .text(400, 400, 'Continue', { fontSize: '24px', fill: '#fff' })

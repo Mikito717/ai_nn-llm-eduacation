@@ -32,6 +32,9 @@ class GameScene0 extends Phaser.Scene {
 
     //ポーズしているかどうかのフラグ
     this.isPaused = false
+
+    //backendからのデータを受け取るためのプロパティ
+    this.data = null
   }
 
   preload() {
@@ -46,6 +49,22 @@ class GameScene0 extends Phaser.Scene {
   }
 
   create() {
+    //flaskからデータを受け取る
+    fetch('http://localhost:5000/api/get_planet_number', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: this.registry.get('username') }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        this.data = data[0].trim().split(',')
+        this.gotplanets_gold = parseInt(this.data[0], 10) || 0
+        this.gotplanets_purple = parseInt(this.data[1], 10) || 0
+        this.gotplanets_blue = parseInt(this.data[2], 10) || 0
+      })
+
     //FPSの設定
     this.game.loop.targetFps = 60
 
@@ -69,8 +88,6 @@ class GameScene0 extends Phaser.Scene {
 
     //惑星を管理するグループを作成
     this.planets = this.physics.add.staticGroup()
-    // シーンの初期化時に惑星を生成
-    //this.createPlanets()
 
     // 宇宙船を作成
     this.anims.create({
@@ -239,7 +256,9 @@ class GameScene0 extends Phaser.Scene {
       `GOT PLANETS: \nGOLD: ${this.gotplanets_gold} \nPURPLE: ${this.gotplanets_purple} \nBLUE: ${this.gotplanets_blue}`,
     )
     this.planetIndicator.setText(
-      `GOT PLANETS: ${this.gotplanets_gold + this.gotplanets_purple + this.gotplanets_blue}`,
+      `GOT PLANETS: ${
+        this.gotplanets_gold + this.gotplanets_purple + this.gotplanets_blue
+      }`,
     )
 
     // 宇宙船と基地の位置を取得
@@ -492,7 +511,6 @@ class GameScene0 extends Phaser.Scene {
         ) {
           overlap = true
           this.planet.destroy()
-          console.log('remove planet')
           //テクスチャキーを取得
           const textureKey = this.planet.texture.key
           //テクスチャも削除

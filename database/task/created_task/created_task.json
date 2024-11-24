@@ -7,3 +7,11 @@
   "taskDescription": "test",
   "rewards": ["100"]
 }
+{
+    "taskName": "",
+    "device": "CPU",
+    "memory": "1GB",
+    "selectedAI": "ai1",
+    "accuracy": "90",
+    "taskDescription": ""
+}

@@ -6,7 +6,6 @@ import torch
 from OpenAI_Chat import chat_with_openai 
 import json
 import os
-
 app = Flask(__name__)
 CORS(app)
 
@@ -180,22 +179,20 @@ def receive_LLM_results():
     print(f"Score: {score}")
     
     return jsonify({"message": "Data received successfully"}), 200
-
-def read_json_file(file_path):
-    if os.path.exists(file_path):
-        with open(file_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)
-        return data
-    else:
-        return None 
         
 @app.route('/api/quests', methods=['GET'])
 def get_cards():
 
-    file_path='../database/task/default_task/default_tasks.json'   
-    quests = read_json_file(file_path)
+    file_path='../database/task/default_task/'   
+    quests = []
+    for filename in os.listdir(file_path):
+        if filename.endswith('.json'):
+            with open(file_path + filename, 'r', encoding='utf-8') as f:
+                quest = json.load(f)
+                quests.append(quest)
     if quests is None:
         return jsonify({"message": "No quests found"}), 404
+    print(quests)
     return jsonify(quests)
 
 @app.route('/api/quests', methods=['POST'])
@@ -215,7 +212,7 @@ def login():
     print(playername, password, isInitialLogin)
     
         # ユーザーネームに基づいたディレクトリを検索
-    import os
+
     if os.path.exists(f'../database/userdata/{playername}'):
         #passwordを読み込み
         with open(f'../database/userdata/{playername}/password.txt', 'r') as f:
@@ -230,6 +227,37 @@ def login():
         with open(f'../database/userdata/{playername}/password.txt', 'w') as f:
             f.write(password)
         return jsonify({"message": "Registry successful","playerName":playername}), 200
+    
+@app.route('/api/set_planet_number', methods=['POST'])
+def set_planet_number():
+    data = request.get_json()
+    print(data)
+    playername = data.get('user')
+    gold = data.get('gold')
+    purple = data.get('purple')
+    blue = data.get('blue')
+    if(os.path.exists(f'../database/userdata/{playername}/planet_number.csv')):
+        with open(f'../database/userdata/{playername}/planet_number.csv', 'a') as f:
+            f.write(f"{gold},{purple},{blue}\n")
+    else:
+        with open(f'../database/userdata/{playername}/planet_number.csv', 'a') as f:
+            f.write("gold,purple,blue\n")
+            f.write(f"{gold},{purple},{blue}\n")
+        
+    return jsonify({"message": "Data received successfully"}), 200
+
+@app.route('/api/get_planet_number', methods=['POST'])
+def get_planet_number():
+    data = request.get_json()
+    playername = data.get('user')
+    planet_number = []
+    with open(f'../database/userdata/{playername}/planet_number.csv', 'r') as f:
+        last_line = None
+        for line in f:
+            last_line = line
+        if last_line:
+            planet_number.append(last_line)
+    return jsonify(planet_number)
 
 if __name__ == '__main__':
     app.run(debug=True)

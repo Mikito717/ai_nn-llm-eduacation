@@ -48,68 +48,57 @@ const SelectedTask = ({ handleback }) => {
         <Card key={index} sx={{ maxWidth: 600, margin: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div">
-              {card.title}
+              {card[0].taskName}
             </Typography>
             <Typography sx={{ marginBottom: 2, color: 'blue' }}>
-              {card.description}
+              {card[0].description}
             </Typography>
             <Typography
               variant="body1"
               component="div"
               sx={{ fontWeight: 'bold', color: 'green' }}
             >
-              Rewards: {card.rewards.join(', ')}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="div"
-              sx={{ fontWeight: 'bold', color: 'red' }}
-            >
-              Task Name: {card.taskName}
+              Rewards: {card[0].rewards}
             </Typography>
             <Typography
               variant="body2"
               component="div"
               sx={{ fontWeight: 'bold', color: 'purple' }}
             >
-              Device: {card.device}
+              Device: {card[0].device}
             </Typography>
             <Typography
               variant="body2"
               component="div"
               sx={{ fontWeight: 'bold', color: 'orange' }}
             >
-              Memory: {card.memory}
+              Memory: {card[0].memory}
             </Typography>
             <Typography
               variant="body2"
               component="div"
               sx={{ fontWeight: 'bold', color: 'brown' }}
             >
-              Selected AI: {card.selectedAI}
+              Selected AI: {card[0].selectedAI}
             </Typography>
             <Typography
               variant="body2"
               component="div"
               sx={{ fontWeight: 'bold', color: 'blue' }}
             >
-              Accuracy: {card.accuracy}
+              Accuracy: {card[0].accuracy}%
             </Typography>
             <Box
               sx={{
                 maxHeight: 100,
                 overflow: 'auto',
-                backgroundColor: 'lightgrey',
                 padding: 1,
                 borderRadius: 1,
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
               }}
             >
-              <Typography
-                variant="body2"
-                component="div"
-                sx={{ color: 'grey' }}
-              >
-                Task Description: {card.taskDescription}
+              <Typography variant="body2" component="div" color="black">
+                Task Description: {card[0].taskDescription}
               </Typography>
             </Box>
           </CardContent>
@@ -118,7 +107,7 @@ const SelectedTask = ({ handleback }) => {
               size="small"
               variant="contained"
               color={card.buttonColor}
-              onClick={() => handleClick(card.id)}
+              onClick={() => handleClick(card[0].id)}
             >
               Accept
             </Button>
@@ -126,7 +115,7 @@ const SelectedTask = ({ handleback }) => {
               size="small"
               variant="contained"
               color="default"
-              onClick={() => handleCancel(card.id)}
+              onClick={() => handleCancel(card[0].id)}
             >
               キャンセル
             </Button>
