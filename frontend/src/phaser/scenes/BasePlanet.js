@@ -118,8 +118,9 @@ class BasePlanet extends Phaser.Scene {
     //どのAIが選択されているか
     this.selectedAI = name
     if (this.selectedAI === 'K-NN') {
-      this.scene.launch('AIDescription', { selectedAI: this.selectedAI })
-      this.scene.pause()
+      //this.scene.launch('AIDescription', { selectedAI: this.selectedAI })
+      //this.scene.pause()
+      this.scene.start('KNN_Paramator')
     } else if (this.selectedAI === 'ランダムフォレスト') {
       this.scene.start('RF_paramator')
     } else if (this.selectedAI === 'SVM') {

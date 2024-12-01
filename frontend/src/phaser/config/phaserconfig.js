@@ -22,6 +22,7 @@ import PCA_paramator from '../scenes/PCA_paramator'
 import PCA_result_mount from '../scenes/PCA_result_mount'
 import SVM_paramator from '../scenes/SVM_paramator'
 import RF_paramator from '../scenes/RF_paramator'
+import KNN_Paramator from '../scenes/KNN_Paramator'
 
 const config = {
   type: Phaser.AUTO,
@@ -58,6 +59,7 @@ const config = {
     PreprocessData,
     SVM_paramator,
     RF_paramator,
+    KNN_Paramator,
   ],
 }
 

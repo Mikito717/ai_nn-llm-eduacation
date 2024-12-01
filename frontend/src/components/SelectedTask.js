@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material'
 
-const SelectedTask = ({ handleback }) => {
+const SelectedTask = ({ handleback, handleClick }) => {
   const [cardsData, setCardsData] = useState([])
 
   const fetchData = () => {
@@ -107,9 +107,12 @@ const SelectedTask = ({ handleback }) => {
               size="small"
               variant="contained"
               color={card.buttonColor}
-              onClick={() => handleClick(card[0].id)}
+              onClick={() => {
+                handleClick(card[0])
+                console.log('ClickTask', card[0])
+              }}
             >
-              Accept
+              Create ML Model
             </Button>
             <Button
               size="small"
@@ -124,11 +127,6 @@ const SelectedTask = ({ handleback }) => {
       ))}
     </div>
   )
-}
-
-const handleClick = (id) => {
-  console.log('Clicked card with id:', id)
-  // Add your click handling logic here
 }
 
 const handleCancel = (id) => {
