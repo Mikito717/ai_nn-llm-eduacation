@@ -35,45 +35,71 @@ class BasePlanet extends Phaser.Scene {
         this.planets_purple = parseInt(this.data[1], 10) || 0
         this.planets_blue = parseInt(this.data[2], 10) || 0
       })
+
+    //flaskに、ml_modelのリクエストを送る
+    fetch('http://localhost:5000/api/get_ml_models', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user: this.registry.get('username') }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Data:', data)
+        // AIの選択ボタンを表示（6個）
+        const buttonNames = [
+          'K-NN',
+          'RF',
+          'SVM',
+          'RNN',
+          'PCA',
+          'K-means',
+          'NN',
+          'CNN',
+        ]
+        // dataでTrueとなっているものだけをフィルタリング
+        this.filteredButtonNames = buttonNames.filter((name) => {
+          const modelName = name.replace('-', '').toLowerCase()
+          return data.some(
+            (item) =>
+              item.model_name.toLowerCase() === modelName &&
+              item.having.toLowerCase() === 'true',
+          )
+        })
+        // フィルタリングされたボタン名を表示
+        console.log('Filtered Button Names:', this.filteredButtonNames)
+
+        this.filteredButtonNames.forEach((name, index) => {
+          const x = startX + (index % cols) * buttonWidth
+          const y = startY + Math.floor(index / cols) * buttonHeight
+
+          const button = this.add
+            .text(x, y, name, {
+              fontSize: '48px',
+              fill: '#fff',
+              backgroundColor: '#000',
+              padding: { x: 10, y: 5 },
+            })
+            .setInteractive()
+            .on('pointerdown', () => this.showAIDescription(name))
+            .on('pointerover', () => {
+              button.setStyle({ fill: '#ff0', backgroundColor: '#333' })
+            })
+            .on('pointerout', () => {
+              button.setStyle({ fill: '#fff', backgroundColor: '#000' })
+            })
+        })
+      })
+
     // basestation.jpgを表示
     this.add.image(400, 300, 'base')
 
-    // AIの選択ボタンを表示（6個）
-    const buttonNames = [
-      'K-NN',
-      'RF',
-      'SVM',
-      'Preprocessing',
-      'PCA',
-      'K-means',
-      'NN',
-    ]
     const cols = 2
     const buttonWidth = 300
     const buttonHeight = 100
     const startX = 200
     const startY = 100
-
-    buttonNames.forEach((name, index) => {
-      const x = startX + (index % cols) * buttonWidth
-      const y = startY + Math.floor(index / cols) * buttonHeight
-
-      const button = this.add
-        .text(x, y, name, {
-          fontSize: '48px',
-          fill: '#fff',
-          backgroundColor: '#000',
-          padding: { x: 10, y: 5 },
-        })
-        .setInteractive()
-        .on('pointerdown', () => this.showAIDescription(name))
-        .on('pointerover', () => {
-          button.setStyle({ fill: '#ff0', backgroundColor: '#333' })
-        })
-        .on('pointerout', () => {
-          button.setStyle({ fill: '#fff', backgroundColor: '#000' })
-        })
-    })
 
     //MainMenuへ戻るボタンを表示
     const backButton = this.add

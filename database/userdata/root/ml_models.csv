@@ -1,0 +1,8 @@
+model_name,having
+KNN,True
+SVM,False
+Kmeans,False
+PCA,False
+RandomForest,False
+RNN,False
+CNN,False

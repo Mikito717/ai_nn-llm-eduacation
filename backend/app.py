@@ -6,6 +6,7 @@ import torch
 from OpenAI_Chat import chat_with_openai 
 import json
 import os
+import csv
 app = Flask(__name__)
 CORS(app)
 
@@ -190,14 +191,28 @@ def login():
             saved_password = f.read()
         if saved_password != password:
             return jsonify({"message": "Login failed. Password is Incorrect."}), 401
-        return jsonify({"message": "Login successful","playerName":playername}), 200
     else:
     # ユーザーネームに基づいたディレクトリを作成
         os.makedirs(f'../database/userdata/{playername}', exist_ok=True)
     #passwordを保存
         with open(f'../database/userdata/{playername}/password.txt', 'w') as f:
             f.write(password)
-        return jsonify({"message": "Registry successful","playerName":playername}), 200
+            
+    #ユーザーデータが存在するかの確認
+    if os.path.exists(f'../database/userdata/{playername}/ml_models.csv'):
+        pass
+    else:
+        with open(f'../database/userdata/{playername}/ml_models.csv', 'w') as f:
+            f.write("model_name,having\n")
+            f.write("KNN,True\n")
+            f.write("SVM,False\n")
+            f.write("Kmeans,False\n")
+            f.write("PCA,False\n")
+            f.write("RandomForest,False\n")
+            f.write("RNN,False\n")
+            f.write("CNN,False\n")
+            
+    return jsonify({"message": "Login successful","playerName":playername}), 200
     
 @app.route('/api/set_planet_number', methods=['POST'])
 def set_planet_number():
@@ -229,6 +244,17 @@ def get_planet_number():
         if last_line:
             planet_number.append(last_line)
     return jsonify(planet_number)
+
+@app.route('/api/get_ml_models', methods=['POST'])
+def get_ml_models():
+    data = request.get_json()
+    playername = data.get('user')
+    ml_models = []
+    with open(f'../database/userdata/{playername}/ml_models.csv', 'r') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            ml_models.append(row)
+    return jsonify(ml_models)
 
 if __name__ == '__main__':
     app.run(debug=True)
