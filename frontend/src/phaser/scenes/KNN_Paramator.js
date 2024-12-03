@@ -16,9 +16,16 @@ class KNN_Paramator extends Phaser.Scene {
     this.updateContainerPosition() // 初期位置を設定
     document.body.appendChild(this.container)
     this.task = this.registry.get('NowTask')
+    this.username = this.registry.get('username')
     // Mount the React component
-    const root = createRoot(this.container)
-    root.render(<KNN_UI task={this.task} />)
+    this.root = createRoot(this.container)
+    this.root.render(
+      <KNN_UI
+        task={this.task}
+        username={this.username}
+        backToTaskList={this.backToTaskList.bind(this)}
+      />,
+    )
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
@@ -32,11 +39,15 @@ class KNN_Paramator extends Phaser.Scene {
     this.container.style.top = `${canvas.top + 20}px`
   }
 
+  backToTaskList() {
+    this.shutdown()
+    this.scene.start('TaskList')
+  }
+
   shutdown() {
     // シーンがシャットダウンするときにReactコンポーネントをクリーンアップ
     if (this.container) {
-      const root = createRoot(this.container)
-      root.unmount()
+      this.root.unmount()
       document.body.removeChild(this.container)
       this.container = null // 参照をクリア
     }

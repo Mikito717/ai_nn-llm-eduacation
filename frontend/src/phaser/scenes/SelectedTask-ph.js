@@ -23,6 +23,7 @@ class SelectedTaskp extends Phaser.Scene {
       <SelectedTask
         handleback={this.handleback.bind(this)}
         handleClick={this.handleclick.bind(this)}
+        username={this.registry.get('username')}
       />,
     )
 

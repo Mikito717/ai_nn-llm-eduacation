@@ -7,6 +7,7 @@ from OpenAI_Chat import chat_with_openai
 import json
 import os
 import csv
+import multiprocessing
 app = Flask(__name__)
 CORS(app)
 
@@ -14,15 +15,31 @@ CORS(app)
 def run_knn():
     print("start run_knn")
     data = request.json
-    print(data)
+    
+    #Check the memory limit
+    taskdata=data['task']
+    memorylimit=taskdata['memory']
+    memorylimit=int(memorylimit)
+    
+    #Check the number of neighbors
+    n=int(data['nNeighbors'])
+    
+    #Check the algorithm and metric
+    algorithm=data['algorithm']
+    metric=data['metric']
+    
     #ここでKNNの処理を行います
-    result=train_knn(int(data['nNeighbors']), data['algorithm'], data['metric'])
-    print(result)
-    result = {
+    with multiprocessing.Pool() as pool:
+        result=pool.apply_async(train_knn,(n,algorithm,metric,memorylimit))
+        result=result.get()
+    #result={accuracy, elapsed_time, mem_usage}
+    responce = {
         'message': 'KNN - 処理が完了しました。',
-        'accuracy': result
+        'accuracy': result[0],
+        'elapsed_time': result[1],
+        'memory_usage': result[2]
     }
-    return jsonify(result)
+    return jsonify(responce)
 
 @app.route('/run_svm', methods=['POST'])
 def run_svm():
@@ -152,9 +169,10 @@ def receive_LLM_results():
     
     return jsonify({"message": "Data received successfully"}), 200
         
-@app.route('/api/quests', methods=['GET'])
+@app.route('/api/get_quests', methods=['POST'])
 def get_cards():
-
+    data = request.get_json()
+    user=data.get('user')
     file_path='../database/task/default_task/'   
     quests = []
     for filename in os.listdir(file_path):
@@ -162,9 +180,22 @@ def get_cards():
             with open(file_path + filename, 'r', encoding='utf-8') as f:
                 quest = json.load(f)
                 quests.append(quest)
-    if quests is None:
-        return jsonify({"message": "No quests found"}), 404
+    
+    # cleartask.csv からクリア済みのタスクIDを取得
+    clear_task_ids = set()
+    with open(f'../database/userdata/{user}/cleartask.csv', 'r', encoding='utf-8') as csvfile:
+        reader = csv.reader(csvfile)
+        for row in reader:
+            clear_task_ids.add(row[0])
+    
     print(quests)
+    # quests からクリア済みのタスクを除外
+    quests = [quest for quest in quests if str(quest[0].get('id')) not in clear_task_ids]
+    print(quests)
+
+    if not quests:
+        return jsonify({"message": "No quests found"}), 404
+
     return jsonify(quests)
 
 @app.route('/api/quests', methods=['POST'])
@@ -212,6 +243,12 @@ def login():
             f.write("RNN,False\n")
             f.write("CNN,False\n")
             
+    if os.path.exists(f'../database/userdata/{playername}/cleartask.csv'):
+        pass
+    else:
+        with open(f'../database/userdata/{playername}/cleartask.csv', 'w') as f:
+            f.write("task_id,accuracy,elapsed_time,memory_usage,model\n")
+            
     return jsonify({"message": "Login successful","playerName":playername}), 200
     
 @app.route('/api/set_planet_number', methods=['POST'])
@@ -255,6 +292,20 @@ def get_ml_models():
         for row in reader:
             ml_models.append(row)
     return jsonify(ml_models)
+
+@app.route('/api/task_clear', methods=['POST'])
+def task_clear():
+    data = request.get_json()
+    playername = data.get('username')
+    taskid = data.get('task_id')
+    accuracy = data.get('accuracy')
+    elapsed_time = data.get('elapsed_time')
+    memory_usage = data.get('memory_usage')
+    model=data.get('model')
+    
+    with open(f'../database/userdata/{playername}/cleartask.csv', 'a') as f:
+        f.write(f"{taskid},{accuracy},{elapsed_time},{memory_usage},{model}\n")
+    return jsonify({"message": "Task clear successfully"}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

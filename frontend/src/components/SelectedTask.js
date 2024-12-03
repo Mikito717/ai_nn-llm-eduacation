@@ -9,14 +9,39 @@ import {
   Typography,
 } from '@mui/material'
 
-const SelectedTask = ({ handleback, handleClick }) => {
+const SelectedTask = ({ handleback, handleClick, username }) => {
   const [cardsData, setCardsData] = useState([])
+  const [error, setError] = useState(null)
 
-  const fetchData = () => {
-    fetch('http://localhost:5000/api/quests') // Flask backend endpoint
-      .then((response) => response.json())
-      .then((data) => setCardsData(data))
-      .catch((error) => console.error('Error fetching data:', error))
+  const fetchData = async () => {
+    fetch('http://localhost:5000/api/get_quests', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user: username,
+      }),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          if (response.status === 404) {
+            throw new Error('No quests found')
+          } else {
+            throw new Error('An error occurred')
+          }
+        }
+        return response.json()
+      })
+      .then((data) => {
+        console.log('Data:', data)
+        setCardsData(data)
+        setError(null)
+      })
+      .catch((error) => {
+        console.error('Error:', error)
+        setError(error.message)
+      })
   }
 
   useEffect(() => {
@@ -44,87 +69,97 @@ const SelectedTask = ({ handleback, handleClick }) => {
       <Button variant="contained" color="primary" onClick={fetchData}>
         リロード
       </Button>
-      {cardsData.map((card, index) => (
-        <Card key={index} sx={{ maxWidth: 600, margin: 2 }}>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              {card[0].taskName}
-            </Typography>
-            <Typography sx={{ marginBottom: 2, color: 'blue' }}>
-              {card[0].description}
-            </Typography>
-            <Typography
-              variant="body1"
-              component="div"
-              sx={{ fontWeight: 'bold', color: 'green' }}
-            >
-              Rewards: {card[0].rewards}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="div"
-              sx={{ fontWeight: 'bold', color: 'purple' }}
-            >
-              Device: {card[0].device}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="div"
-              sx={{ fontWeight: 'bold', color: 'orange' }}
-            >
-              Memory: {card[0].memory}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="div"
-              sx={{ fontWeight: 'bold', color: 'brown' }}
-            >
-              Selected AI: {card[0].selectedAI}
-            </Typography>
-            <Typography
-              variant="body2"
-              component="div"
-              sx={{ fontWeight: 'bold', color: 'blue' }}
-            >
-              Accuracy: {card[0].accuracy}%
-            </Typography>
-            <Box
-              sx={{
-                maxHeight: 100,
-                overflow: 'auto',
-                padding: 1,
-                borderRadius: 1,
-                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-              }}
-            >
-              <Typography variant="body2" component="div" color="black">
-                Task Description: {card[0].taskDescription}
+      {error ? (
+        <Typography variant="h5" component="div" sx={{ marginTop: 2 }}>
+          {error}
+        </Typography>
+      ) : cardsData.length === 0 ? (
+        <Typography variant="h5" component="div" sx={{ marginTop: 2 }}>
+          No tasks available
+        </Typography>
+      ) : (
+        cardsData.map((card, index) => (
+          <Card key={index} sx={{ maxWidth: 600, margin: 2 }}>
+            <CardContent>
+              <Typography variant="h5" component="div">
+                {card[0].taskName}
               </Typography>
-            </Box>
-          </CardContent>
-          <CardActions>
-            <Button
-              size="small"
-              variant="contained"
-              color={card.buttonColor}
-              onClick={() => {
-                handleClick(card[0])
-                console.log('ClickTask', card[0])
-              }}
-            >
-              Create ML Model
-            </Button>
-            <Button
-              size="small"
-              variant="contained"
-              color="default"
-              onClick={() => handleCancel(card[0].id)}
-            >
-              キャンセル
-            </Button>
-          </CardActions>
-        </Card>
-      ))}
+              <Typography sx={{ marginBottom: 2, color: 'blue' }}>
+                {card[0].description}
+              </Typography>
+              <Typography
+                variant="body1"
+                component="div"
+                sx={{ fontWeight: 'bold', color: 'green' }}
+              >
+                Rewards: {card[0].rewards}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{ fontWeight: 'bold', color: 'purple' }}
+              >
+                Device: {card[0].device}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{ fontWeight: 'bold', color: 'orange' }}
+              >
+                Memory: {card[0].memory}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{ fontWeight: 'bold', color: 'brown' }}
+              >
+                Selected AI: {card[0].selectedAI}
+              </Typography>
+              <Typography
+                variant="body2"
+                component="div"
+                sx={{ fontWeight: 'bold', color: 'blue' }}
+              >
+                Accuracy: {card[0].accuracy}%
+              </Typography>
+              <Box
+                sx={{
+                  maxHeight: 100,
+                  overflow: 'auto',
+                  padding: 1,
+                  borderRadius: 1,
+                  backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <Typography variant="body2" component="div" color="black">
+                  Task Description: {card[0].taskDescription}
+                </Typography>
+              </Box>
+            </CardContent>
+            <CardActions>
+              <Button
+                size="small"
+                variant="contained"
+                color={card.buttonColor}
+                onClick={() => {
+                  handleClick(card[0])
+                  console.log('ClickTask', card[0])
+                }}
+              >
+                Create ML Model
+              </Button>
+              <Button
+                size="small"
+                variant="contained"
+                color="default"
+                onClick={() => handleCancel(card[0].id)}
+              >
+                キャンセル
+              </Button>
+            </CardActions>
+          </Card>
+        ))
+      )}
     </div>
   )
 }
