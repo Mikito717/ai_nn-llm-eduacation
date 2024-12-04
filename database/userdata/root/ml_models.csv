@@ -1,8 +1,7 @@
 model_name,having
 KNN,True
-SVM,False
-Kmeans,False
+SVM,True
+Kmeans,True
 PCA,False
-RandomForest,False
-RNN,False
-CNN,False
+RF,True
+NN,True

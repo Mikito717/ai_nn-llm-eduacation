@@ -1,0 +1,13 @@
+[
+  {
+    "id": 3,
+    "taskName": "乳がんの診断",
+    "device": "CPU",
+    "memory": 3,
+    "selectedAI": "Random Forest",
+    "accuracy": "92",
+    "taskDescription": "乳がんの診断を行うAIを作成してください。データセットには、乳がんの診断に使用される特徴量が含まれています。",
+    "rewards": ["200"],
+    "timelimit": 3
+  }
+]

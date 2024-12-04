@@ -16,13 +16,13 @@ import LLMScene2 from '../scenes/LLMScene2'
 import SelectedTaskp from '../scenes/SelectedTask-ph'
 import LLMScene3 from '../scenes/LLMScene3'
 import LLMScene4 from '../scenes/LLMScene4'
-import Clustering_mount from '../scenes/Clustering_mount'
-import NN_mount from '../scenes/NN_mount'
+import NN_paramator from '../scenes/NN_paramator'
 import PCA_paramator from '../scenes/PCA_paramator'
 import PCA_result_mount from '../scenes/PCA_result_mount'
 import SVM_paramator from '../scenes/SVM_paramator'
 import RF_paramator from '../scenes/RF_paramator'
 import KNN_Paramator from '../scenes/KNN_Paramator'
+import Kmeans_paramator from '../scenes/Kmeans_paramator'
 
 const config = {
   type: Phaser.AUTO,
@@ -52,14 +52,14 @@ const config = {
     SelectedTaskp,
     LLMScene3,
     LLMScene4,
-    Clustering_mount,
-    NN_mount,
+    NN_paramator,
     PCA_paramator,
     PCA_result_mount,
     PreprocessData,
     SVM_paramator,
     RF_paramator,
     KNN_Paramator,
+    Kmeans_paramator,
   ],
 }
 

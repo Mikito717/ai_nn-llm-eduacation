@@ -48,16 +48,7 @@ class BasePlanet extends Phaser.Scene {
       .then((data) => {
         console.log('Data:', data)
         // AIの選択ボタンを表示（6個）
-        const buttonNames = [
-          'K-NN',
-          'RF',
-          'SVM',
-          'RNN',
-          'PCA',
-          'K-means',
-          'NN',
-          'CNN',
-        ]
+        const buttonNames = ['K-NN', 'RF', 'SVM', 'RNN', 'PCA', 'K-means', 'NN']
         // dataでTrueとなっているものだけをフィルタリング
         this.filteredButtonNames = buttonNames.filter((name) => {
           const modelName = name.replace('-', '').toLowerCase()
@@ -147,7 +138,7 @@ class BasePlanet extends Phaser.Scene {
       //this.scene.launch('AIDescription', { selectedAI: this.selectedAI })
       //this.scene.pause()
       this.scene.start('KNN_Paramator')
-    } else if (this.selectedAI === 'ランダムフォレスト') {
+    } else if (this.selectedAI === 'RF') {
       this.scene.start('RF_paramator')
     } else if (this.selectedAI === 'SVM') {
       this.scene.start('SVM_paramator')
@@ -156,9 +147,9 @@ class BasePlanet extends Phaser.Scene {
     } else if (this.selectedAI === 'PCA') {
       this.scene.start('PCA_paramator')
     } else if (this.selectedAI === 'K-means') {
-      this.scene.start('Clustering_mount')
+      this.scene.start('Kmeans_paramator')
     } else if (this.selectedAI === 'NN') {
-      this.scene.start('NN_mount')
+      this.scene.start('NN_paramator')
     }
   }
 }

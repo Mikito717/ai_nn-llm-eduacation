@@ -16,10 +16,17 @@ class SVM_paramator extends Phaser.Scene {
     this.container.style.position = 'absolute'
     this.updateContainerPosition() // 初期位置を設定
     document.body.appendChild(this.container)
+    this.task = this.registry.get('NowTask')
 
     // Mount the React component
     this.root = createRoot(this.container)
-    this.root.render(<SVM_UI back={this.handleback} />)
+    this.root.render(
+      <SVM_UI
+        task={this.task}
+        username={this.registry.get('username')}
+        backToTaskList={this.handleback}
+      />,
+    )
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))

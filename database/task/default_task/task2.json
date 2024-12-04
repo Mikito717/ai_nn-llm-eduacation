@@ -1,0 +1,13 @@
+[
+  {
+    "id": 2,
+    "taskName": "ワインの識別",
+    "device": "CPU",
+    "memory": 2,
+    "selectedAI": "SVM",
+    "accuracy": "95",
+    "taskDescription": "最近ワインに凝っていてね、自分の味覚が客観的に正しいのか気になるから、ワインの品種を分類してくれるAIを作ってくれ。",
+    "rewards": ["150"],
+    "timelimit": 2
+  }
+]

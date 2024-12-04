@@ -1,12 +1,13 @@
 import Phaser from 'phaser'
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import ClusteringUI from '../../components/Clustering_UI'
+import KmeansUI from '../../components/Kmeans_UI'
 
-class Clustering_mount extends Phaser.Scene {
+class Kmeans_paramator extends Phaser.Scene {
   constructor() {
-    super({ key: 'Clustering_mount' })
+    super({ key: 'Kmeans_paramator' })
     this.container = null // DOMコンテナの参照を保持
+    this.handleback = this.handleback.bind(this)
   }
 
   create() {
@@ -18,10 +19,21 @@ class Clustering_mount extends Phaser.Scene {
 
     // Mount the React component
     const root = createRoot(this.container)
-    root.render(<ClusteringUI />)
+    root.render(
+      <KmeansUI
+        task={this.registry.get('NowTask')}
+        username={this.registry.get('username')}
+        backToTaskList={this.handleback}
+      />,
+    )
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
+  }
+
+  handleback() {
+    this.shutdown()
+    this.scene.start('BasePlanet')
   }
 
   updateContainerPosition() {
@@ -48,4 +60,4 @@ class Clustering_mount extends Phaser.Scene {
   }
 }
 
-export default Clustering_mount
+export default Kmeans_paramator

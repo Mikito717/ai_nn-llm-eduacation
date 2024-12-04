@@ -7,35 +7,37 @@ import {
   FormControl,
 } from '@mui/material'
 
-const RF_UI = ({ task, username, backToTaskList }) => {
-  const [nEstimators, setNEstimators] = useState(100)
-  const [maxDepth, setMaxDepth] = useState(null)
-  const [minSamplesSplit, setMinSamplesSplit] = useState(2)
-  const [minSamplesLeaf, setMinSamplesLeaf] = useState(1)
-  const [rfData, setRfData] = useState({})
+const Kmeans_UI = ({ task, username, backToTaskList }) => {
+  const [nClusters, setNClusters] = useState(8)
+  const [init, setInit] = useState('k-means++')
+  const [nInit, setNInit] = useState(10)
+  const [maxIter, setMaxIter] = useState(300)
+  const [tol, setTol] = useState(0.0001)
+  const [kmeansData, setKmeansData] = useState({})
   const [loading, setLoading] = useState(false)
-  const [rfResult, setRfResult] = useState('')
+  const [kmeansResult, setKmeansResult] = useState('')
   const [isOverlayVisible, setIsOverlayVisible] = useState(false)
   const [isClear, setIsClear] = useState(false)
 
   const handleCreate = async () => {
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:5000/run_randomforest', {
+      const response = await fetch('http://localhost:5000/run_kmeans', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          n_estimators: nEstimators,
-          max_depth: maxDepth,
-          min_samples_split: minSamplesSplit,
-          min_samples_leaf: minSamplesLeaf,
+          n_clusters: nClusters,
+          init,
+          n_init: nInit,
+          max_iter: maxIter,
+          tol,
           task,
         }),
       })
       const data = await response.json()
-      setRfData(data)
+      setKmeansData(data)
     } catch (error) {
       console.error('Error:', error)
     } finally {
@@ -45,21 +47,21 @@ const RF_UI = ({ task, username, backToTaskList }) => {
 
   const handleSubmit = () => {
     if (
-      rfData.accuracy * 100 > task.accuracy &&
-      rfData.elapsed_time < task.timelimit &&
-      rfData.memory_usage < task.memory
+      kmeansData.silhouette < task.accuracy &&
+      kmeansData.elapsed_time < task.timelimit &&
+      kmeansData.memory_usage < task.memory
     ) {
-      setRfResult('Clear')
+      setKmeansResult('Clear')
       setIsClear(true)
     } else {
-      if (rfData.accuracy * 100 <= task.accuracy) {
-        setRfResult('Fail: Accuracy too low')
+      if (kmeansData.silhouette >= task.accuracy) {
+        setKmeansResult('Fail: Inertia too high')
       }
-      if (rfData.elapsed_time >= task.timelimit) {
-        setRfResult('Fail: Time limit exceeded')
+      if (kmeansData.elapsed_time >= task.timelimit) {
+        setKmeansResult('Fail: Time limit exceeded')
       }
-      if (rfData.memory_usage >= task.memory) {
-        setRfResult('Fail: Memory usage too high')
+      if (kmeansData.memory_usage >= task.memory) {
+        setKmeansResult('Fail: Memory usage too high')
       }
     }
     setIsOverlayVisible(true)
@@ -74,11 +76,11 @@ const RF_UI = ({ task, username, backToTaskList }) => {
         },
         body: JSON.stringify({
           username,
-          accuracy: rfData.accuracy * 100,
-          elapsed_time: rfData.elapsed_time,
-          memory_usage: rfData.memory_usage,
+          accuracy: kmeansData.silhouette,
+          elapsed_time: kmeansData.elapsed_time,
+          memory_usage: kmeansData.memory_usage,
           task_id: task.id,
-          model: 'RandomForest',
+          model: 'KMeans',
         }),
       })
     } catch (error) {
@@ -90,39 +92,47 @@ const RF_UI = ({ task, username, backToTaskList }) => {
 
   return (
     <Container style={{ backgroundColor: 'white', width: '500px' }}>
-      <Typography variant="h4" gutterBottom color="black">
-        ランダムフォレストのハイパーパラメータ設定
+      <Typography variant="h5" gutterBottom color="black">
+        KMeansのハイパーパラメータ設定
       </Typography>
-      <FormControl fullWidth margin="normal">
+      <FormControl fullWidth margin="normal" style={{ color: 'white' }}>
         <TextField
-          label="n_estimators"
+          label="n_clusters"
           type="number"
-          value={nEstimators}
-          onChange={(e) => setNEstimators(e.target.value)}
+          value={nClusters}
+          onChange={(e) => setNClusters(e.target.value)}
         />
       </FormControl>
       <FormControl fullWidth margin="normal">
         <TextField
-          label="max_depth"
-          type="number"
-          value={maxDepth}
-          onChange={(e) => setMaxDepth(e.target.value)}
+          label="init"
+          type="text"
+          value={init}
+          onChange={(e) => setInit(e.target.value)}
         />
       </FormControl>
       <FormControl fullWidth margin="normal">
         <TextField
-          label="min_samples_split"
+          label="n_init"
           type="number"
-          value={minSamplesSplit}
-          onChange={(e) => setMinSamplesSplit(e.target.value)}
+          value={nInit}
+          onChange={(e) => setNInit(e.target.value)}
         />
       </FormControl>
       <FormControl fullWidth margin="normal">
         <TextField
-          label="min_samples_leaf"
+          label="max_iter"
           type="number"
-          value={minSamplesLeaf}
-          onChange={(e) => setMinSamplesLeaf(e.target.value)}
+          value={maxIter}
+          onChange={(e) => setMaxIter(e.target.value)}
+        />
+      </FormControl>
+      <FormControl fullWidth margin="normal">
+        <TextField
+          label="tol"
+          type="number"
+          value={tol}
+          onChange={(e) => setTol(e.target.value)}
         />
       </FormControl>
       <Button variant="contained" color="primary" onClick={handleCreate}>
@@ -132,8 +142,8 @@ const RF_UI = ({ task, username, backToTaskList }) => {
         <p style={{ color: 'black', fontWeight: 'bold' }}>Loading...</p>
       ) : (
         <p style={{ color: 'black', fontWeight: 'bold' }}>
-          Accuracy: {rfData.accuracy * 100}%, Elapsed Time:{' '}
-          {rfData.elapsed_time} , Memory Usage: {rfData.memory_usage}GB,
+          silhouette: {kmeansData.silhouette}, Elapsed Time:{' '}
+          {kmeansData.elapsed_time}, Memory Usage: {kmeansData.memory_usage}GB,
         </p>
       )}
       <Button variant="contained" color="primary" onClick={handleSubmit}>
@@ -154,7 +164,7 @@ const RF_UI = ({ task, username, backToTaskList }) => {
           }}
         >
           <div className="overlay-content">
-            <h2 style={{ color: 'black' }}>{rfResult}</h2>
+            <h2 style={{ color: 'black' }}>{kmeansResult}</h2>
             {isClear && (
               <Button variant="contained" color="primary" onClick={handleBack}>
                 Back to Task List
@@ -166,7 +176,7 @@ const RF_UI = ({ task, username, backToTaskList }) => {
               onClick={() => setIsOverlayVisible(false)}
             >
               Retry
-            </Button>
+            </Button>{' '}
           </div>
         </div>
       )}
@@ -174,4 +184,4 @@ const RF_UI = ({ task, username, backToTaskList }) => {
   )
 }
 
-export default RF_UI
+export default Kmeans_UI

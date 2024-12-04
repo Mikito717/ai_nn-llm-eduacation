@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from KNN import     train_knn
+from KNN import train_knn
+from SVM import train_svm
+from RF import train_randomforest
+from NN import train_neuralnetwork  # 追加
 import numpy as np
 import torch
 from OpenAI_Chat import chat_with_openai 
@@ -8,6 +11,7 @@ import json
 import os
 import csv
 import multiprocessing
+from Kmeans import train_kmeans  # 追加
 app = Flask(__name__)
 CORS(app)
 
@@ -44,34 +48,61 @@ def run_knn():
 @app.route('/run_svm', methods=['POST'])
 def run_svm():
     print("start run_svm")
-    data =request.json
-
-    #ここでSVMの処理を行います
+    data = request.json
     
-    result = {
-        'message': 'SVM - 処理が完了しました。'
+    # パラメータの取得
+    taskdata = data['task']
+    memorylimit = taskdata['memory']
+    memorylimit = int(memorylimit)
+    
+    kernel = data['kernel']
+    C = float(data['C'])
+    gamma = data['gamma']
+    degree = int(data['degree'])
+    
+    # ここでSVMの処理を行います
+    with multiprocessing.Pool() as pool:
+        result = pool.apply_async(train_svm, (C,kernel,  degree,gamma, memorylimit))
+        result = result.get()
+    # result={accuracy, elapsed_time, mem_usage}
+    response = {
+        'message': 'SVM - 処理が完了しました。',
+        'accuracy': result[0],
+        'elapsed_time': result[1],
+        'memory_usage': result[2]
     }
-    return jsonify(result)
+    return jsonify(response)
 
 @app.route('/run_kmeans', methods=['POST'])
 def run_kmeans():
     print("start run_kmeans")
     data = request.json
+    n_clusters = int(data['n_clusters'])
+    init = data['init']
+    n_init = int(data['n_init'])
+    max_iter = int(data['max_iter'])
+    tol = float(data['tol'])
+    #memorylimit = int(data['memorylimit'])
 
-    #ここでK-meansの処理を行います
-
-    result = {
-        'message': 'K-means - 処理が完了しました。'
+    # ここでK-meansの処理を行います
+    with multiprocessing.Pool() as pool:
+        result = pool.apply_async(train_kmeans, (n_clusters, init, n_init, max_iter, tol))
+        result = result.get()
+    # result={silhouette, elapsed_time, memory_usage}
+    response = {
+        'message': 'K-means - 処理が完了しました。',
+        'silhouette': result[0],
+        'elapsed_time': result[1],
+        'memory_usage': result[2]
     }
-    return jsonify(result)
+    return jsonify(response)
 
 @app.route('/run_pca', methods=['POST'])
 def run_pca():
     print("start run_pca")
     data = request.json
 
-    #ここでPCAの処理を行います
-
+    # ここでPCAの処理を行います
     result = {
         'message': 'PCA - 処理が完了しました。'
     }
@@ -81,37 +112,69 @@ def run_pca():
 def run_randomforest():
     print("start run_randomforest")
     data = request.json
-
-    #ここでRandomForestの処理を行います
-
-    result = {
-        'message': 'RandomForest - 処理が完了しました。'
+    
+    # パラメータの取得
+    taskdata = data['task']
+    memorylimit = taskdata['memory']
+    memorylimit = int(memorylimit)
+    
+    n_estimators = int(data['n_estimators'])
+    max_depth = data['max_depth']
+    if max_depth is not None:
+        max_depth = int(max_depth)
+    min_samples_split = int(data['min_samples_split'])
+    min_samples_leaf = int(data['min_samples_leaf'])
+    
+    # ここでランダムフォレストの処理を行います
+    with multiprocessing.Pool() as pool:
+        result = pool.apply_async(train_randomforest, (n_estimators, max_depth, min_samples_split, min_samples_leaf, memorylimit))
+        result = result.get()
+    # result={accuracy, elapsed_time, mem_usage}
+    response = {
+        'message': 'RandomForest - 処理が完了しました。',
+        'accuracy': result[0],
+        'elapsed_time': result[1],
+        'memory_usage': result[2]
     }
-    return jsonify(result)
+    return jsonify(response)
 
-@app.route('/run_RNN', methods=['POST'])
-def run_RNN():
-    print("start run_RNN")
+@app.route('/run_NN', methods=['POST'])
+def run_NN():
+    print("start run_NN")
     data = request.json
+    
+    # パラメータの取得
+    taskdata = data['task']
+    memorylimit = taskdata['memory']
+    memorylimit = int(memorylimit)
+    
+    # パラメータの取得
+    layers = data['layers']
+    learning_rate = data['learning_rate']
+    algorithm = data['algorithm']
+    if learning_rate is None:
+        learning_rate = 0.01  # デフォルト値を設定
+    else:
+        learning_rate = float(learning_rate)
+    epochs = data['epochs']
+    if epochs is None:
+        epochs = 1000  # デフォルト値を設定
+    else:
+        epochs = int(epochs)
+    model_type = data['model_type']
+    
+    # ここでNNの処理を行います
 
-    #ここでRNNの処理を行います
+    result = train_neuralnetwork(layers, learning_rate, epochs,algorithm, model_type)
 
-    result = {
-        'message': 'RNN - 処理が完了しました。'
+    # result={accuracy, elapsed_time, mem_usage}
+    response = {
+        'message': 'NN - 処理が完了しました。',
+        'accuracy': result[0],
+        'elapsed_time': result[1],
+        'memory_usage': result[2]
     }
-    return jsonify(result)
-
-@app.route('/run_CNN', methods=['POST'])
-def run_CNN():
-    print("start run_CNN")
-    data = request.json
-
-    #ここでCNNの処理を行います
-
-    result = {
-        'message': 'CNN - 処理が完了しました。'
-    }
-    return jsonify(result)
+    return jsonify(response)
 
 @app.route('/run_LLM', methods=['POST'])
 def run_LLM():
@@ -239,9 +302,8 @@ def login():
             f.write("SVM,False\n")
             f.write("Kmeans,False\n")
             f.write("PCA,False\n")
-            f.write("RandomForest,False\n")
-            f.write("RNN,False\n")
-            f.write("CNN,False\n")
+            f.write("RF,False\n")
+            f.write("NN,False\n")
             
     if os.path.exists(f'../database/userdata/{playername}/cleartask.csv'):
         pass

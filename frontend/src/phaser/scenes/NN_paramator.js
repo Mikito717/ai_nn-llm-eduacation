@@ -3,10 +3,11 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import NNUI from '../../components/NeuralNetwork_UI'
 
-class NN_mount extends Phaser.Scene {
+class NN_paramator extends Phaser.Scene {
   constructor() {
-    super({ key: 'NN_mount' })
+    super({ key: 'NN_paramator' })
     this.container = null // DOMコンテナの参照を保持
+    this.handleback = this.handleback.bind(this)
   }
 
   create() {
@@ -18,10 +19,21 @@ class NN_mount extends Phaser.Scene {
 
     // Mount the React component
     const root = createRoot(this.container)
-    root.render(<NNUI />)
+    root.render(
+      <NNUI
+        task={this.registry.get('NowTask')}
+        username={this.registry.get('username')}
+        backToTaskList={this.handleback}
+      />,
+    )
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
+  }
+
+  handleback() {
+    this.shutdown()
+    this.scene.start('BasePlanet')
   }
 
   updateContainerPosition() {
@@ -48,4 +60,4 @@ class NN_mount extends Phaser.Scene {
   }
 }
 
-export default NN_mount
+export default NN_paramator

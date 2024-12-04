@@ -7,6 +7,7 @@ class RF_paramator extends Phaser.Scene {
   constructor() {
     super({ key: 'RF_paramator' })
     this.container = null // DOMコンテナの参照を保持
+    this.handleback = this.handleback.bind(this)
   }
 
   create() {
@@ -18,10 +19,21 @@ class RF_paramator extends Phaser.Scene {
 
     // Mount the React component
     const root = createRoot(this.container)
-    root.render(<RF_UI />)
+    root.render(
+      <RF_UI
+        task={this.registry.get('NowTask')}
+        username={this.registry.get('username')}
+        backToTaskList={this.handleback}
+      />,
+    )
 
     // ウィンドウのサイズ変更イベントを監視
     window.addEventListener('resize', this.updateContainerPosition.bind(this))
+  }
+
+  handleback() {
+    this.shutdown()
+    this.scene.start('BasePlanet')
   }
 
   updateContainerPosition() {

@@ -1,0 +1,13 @@
+[
+  {
+    "id": 5,
+    "taskName": "手書き文字認識",
+    "device": "CPU",
+    "memory": 4,
+    "selectedAI": "Neural Network",
+    "accuracy": "97",
+    "taskDescription": "手書き文字を認識するAIを作成してください。データセットには、手書き文字の画像とそれに対応するラベルが含まれています。",
+    "rewards": ["250"],
+    "timelimit": 4
+  }
+]

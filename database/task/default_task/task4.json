@@ -1,0 +1,13 @@
+[
+  {
+    "id": 4,
+    "taskName": "顧客セグメンテーション",
+    "device": "CPU",
+    "memory": 2,
+    "selectedAI": "Kmeans",
+    "accuracy": "85",
+    "taskDescription": "顧客データを基に、顧客をセグメント化するAIを作成してください。これにより、マーケティング戦略を最適化できます。",
+    "rewards": ["180"],
+    "timelimit": 2
+  }
+]
