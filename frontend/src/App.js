@@ -9,7 +9,6 @@ import Home from './components/Home'
 import Game from './components/Game'
 import Phaser from 'phaser'
 import config from './phaser/config/phaserconfig'
-import LLMResultUI from './components/LLM_ResultUI'
 
 const App = () => {
   return (
