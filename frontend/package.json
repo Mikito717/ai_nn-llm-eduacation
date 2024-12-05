@@ -11,6 +11,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
+    "cross-env": "^7.0.3",
     "marked": "^14.1.2",
     "phaser": "^3.85.2",
     "react": "^18.3.1",
@@ -21,7 +22,7 @@
   },
   "scripts": {
     "start": "set BROWSER=chrome && react-scripts start",
-    "build": "react-scripts build",
+    "build": "cross-env PUBLIC_URL=/ai_nn_llm_education react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
