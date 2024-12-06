@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/static/css/main.59707c40.css",
-    "main.js": "/static/js/main.99c777a1.js",
-    "index.html": "/index.html",
-    "main.59707c40.css.map": "/static/css/main.59707c40.css.map",
-    "main.99c777a1.js.map": "/static/js/main.99c777a1.js.map"
+    "main.css": "/ai_nn-llm-education/static/css/main.59707c40.css",
+    "main.js": "/ai_nn-llm-education/static/js/main.99c777a1.js",
+    "index.html": "/ai_nn-llm-education/index.html",
+    "main.59707c40.css.map": "/ai_nn-llm-education/static/css/main.59707c40.css.map",
+    "main.99c777a1.js.map": "/ai_nn-llm-education/static/js/main.99c777a1.js.map"
   },
   "entrypoints": [
     "static/css/main.59707c40.css",
