@@ -4,8 +4,6 @@ from KNN import train_knn
 from SVM import train_svm
 from RF import train_randomforest
 from NN import train_neuralnetwork  # 追加
-import numpy as np
-import torch
 from OpenAI_Chat import chat_with_openai 
 import json
 import os
