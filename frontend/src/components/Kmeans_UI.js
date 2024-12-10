@@ -22,20 +22,23 @@ const Kmeans_UI = ({ task, username, backToTaskList }) => {
   const handleCreate = async () => {
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:5000/run_kmeans', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/run_kmeans`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            n_clusters: nClusters,
+            init,
+            n_init: nInit,
+            max_iter: maxIter,
+            tol,
+            task,
+          }),
         },
-        body: JSON.stringify({
-          n_clusters: nClusters,
-          init,
-          n_init: nInit,
-          max_iter: maxIter,
-          tol,
-          task,
-        }),
-      })
+      )
       const data = await response.json()
       setKmeansData(data)
     } catch (error) {
@@ -69,20 +72,23 @@ const Kmeans_UI = ({ task, username, backToTaskList }) => {
 
   const handleBack = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/task_clear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}api/task_clear`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            accuracy: kmeansData.silhouette,
+            elapsed_time: kmeansData.elapsed_time,
+            memory_usage: kmeansData.memory_usage,
+            task_id: task.id,
+            model: 'KMeans',
+          }),
         },
-        body: JSON.stringify({
-          username,
-          accuracy: kmeansData.silhouette,
-          elapsed_time: kmeansData.elapsed_time,
-          memory_usage: kmeansData.memory_usage,
-          task_id: task.id,
-          model: 'KMeans',
-        }),
-      })
+      )
     } catch (error) {
       console.error('Error:', error)
     }

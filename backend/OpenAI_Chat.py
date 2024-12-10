@@ -25,9 +25,6 @@ def chat_with_openai(prompt, chatnumber, username,reset_flag=False):
         
         if not os.path.exists(conversation_file):
             conversation_history = []
-            # Create file if it does not exist
-            #current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            #conversation_file = f"{user_dir}/role{chatnumber}_conversation_{current_time}.txt"
             
             with open(conversation_file, "w", encoding="utf-8") as f:
                 f.write("")  # Create an empty file

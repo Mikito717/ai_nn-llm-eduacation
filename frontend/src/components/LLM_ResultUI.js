@@ -10,18 +10,21 @@ const LLMResultUI = ({ finalanswer, correctanswer, onback, username }) => {
 
   const sendResultsToBackend = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/results', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}api/results`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            finalanswer,
+            correctanswer,
+            score,
+            username,
+          }),
         },
-        body: JSON.stringify({
-          finalanswer,
-          correctanswer,
-          score,
-          username,
-        }),
-      })
+      )
       if (!response.ok) {
         throw new Error('Network response was not ok')
       }

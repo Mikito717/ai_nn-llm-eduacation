@@ -22,7 +22,7 @@ function TaskCreator({ onSubmitTask, onSelectAI, onBack }) {
   const handleTaskSubmit = async () => {
     if (onSubmitTask) onSubmitTask(taskName)
 
-    const response = await fetch('http://localhost:5000/api/quests', {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}api/quests`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

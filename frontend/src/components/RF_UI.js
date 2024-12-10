@@ -67,20 +67,23 @@ const RF_UI = ({ task, username, backToTaskList }) => {
 
   const handleBack = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/task_clear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}api/task_clear`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            accuracy: rfData.accuracy * 100,
+            elapsed_time: rfData.elapsed_time,
+            memory_usage: rfData.memory_usage,
+            task_id: task.id,
+            model: 'RandomForest',
+          }),
         },
-        body: JSON.stringify({
-          username,
-          accuracy: rfData.accuracy * 100,
-          elapsed_time: rfData.elapsed_time,
-          memory_usage: rfData.memory_usage,
-          task_id: task.id,
-          model: 'RandomForest',
-        }),
-      })
+      )
     } catch (error) {
       console.error('Error:', error)
     }

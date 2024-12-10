@@ -27,19 +27,22 @@ const SVM_UI = ({ task, username, backToTaskList }) => {
   const handleCreate = async () => {
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:5000/run_svm', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}api/run_svm`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            kernel,
+            C,
+            gamma,
+            degree,
+            task,
+          }),
         },
-        body: JSON.stringify({
-          kernel,
-          C,
-          gamma,
-          degree,
-          task,
-        }),
-      })
+      )
       const data = await response.json()
       setSvmData(data)
     } catch (error) {
@@ -73,20 +76,23 @@ const SVM_UI = ({ task, username, backToTaskList }) => {
 
   const handleBack = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/task_clear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}api/task_clear`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            accuracy: svmdata.accuracy * 100,
+            elapsed_time: svmdata.elapsed_time,
+            memory_usage: svmdata.memory_usage,
+            task_id: task.id,
+            model: 'SVM',
+          }),
         },
-        body: JSON.stringify({
-          username,
-          accuracy: svmdata.accuracy * 100,
-          elapsed_time: svmdata.elapsed_time,
-          memory_usage: svmdata.memory_usage,
-          task_id: task.id,
-          model: 'SVM',
-        }),
-      })
+      )
     } catch (error) {
       console.error('Error:', error)
     }

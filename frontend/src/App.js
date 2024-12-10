@@ -12,7 +12,7 @@ import config from './phaser/config/phaserconfig'
 
 const App = () => {
   return (
-    <Router>
+    <Router basename="/ai_nn-llm-eduacation">
       <AppContent />
     </Router>
   )

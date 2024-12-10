@@ -179,6 +179,7 @@ def run_NN():
 @app.route('/run_LLM', methods=['POST'])
 def run_LLM():
     print("start run_LLM")
+    """
     data = request.json
     message = data.get('message')
     chatnumber = data.get('chatNumber')
@@ -187,14 +188,14 @@ def run_LLM():
     print(f"message: {message}, chatnumber: {chatnumber}, reset_flag: {reset_flag}, username: {username}")
     
     responce=chat_with_openai(message,chatnumber,username,reset_flag)
-
+  
     if responce=="Conversation reset successfully":
         return  200
     elif reset_flag:
         return responce
-
+    """
     result = {
-        'message': responce
+        'message': "Not Deployed Yet"
     }
     return jsonify(result)
 

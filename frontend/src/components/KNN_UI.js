@@ -28,7 +28,7 @@ const KNN_UI = ({ task, username, backToTaskList }) => {
   const handleCreate = async () => {
     setLoading(true)
     try {
-      const responce = await fetch('http://localhost:5000/run_knn', {
+      const responce = await fetch(`${process.env.REACT_APP_API_URL}/run_knn`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -74,20 +74,23 @@ const KNN_UI = ({ task, username, backToTaskList }) => {
 
   const handleBack = async () => {
     try {
-      const responce = await fetch('http://localhost:5000/api/task_clear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const responce = await fetch(
+        `${process.env.REACT_APP_API_URL}api/task_clear`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            accuracy: knndata.accuracy * 100,
+            elapsed_time: knndata.elapsed_time,
+            memory_usage: knndata.memory_usage,
+            task_id: task.id,
+            model: 'KNN',
+          }),
         },
-        body: JSON.stringify({
-          username,
-          accuracy: knndata.accuracy * 100,
-          elapsed_time: knndata.elapsed_time,
-          memory_usage: knndata.memory_usage,
-          task_id: task.id,
-          model: 'KNN',
-        }),
-      })
+      )
     } catch (error) {
       console.error('Error:', error)
     }

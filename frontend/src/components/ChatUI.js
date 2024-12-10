@@ -60,11 +60,14 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/run_LLM', {
-          chatNumber: chatNumber,
-          username: username,
-          resetflag: true,
-        })
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/run_LLM`,
+          {
+            chatNumber: chatNumber,
+            username: username,
+            resetflag: true,
+          },
+        )
 
         setMessages((prevMessages) => [
           ...prevMessages,
@@ -96,11 +99,14 @@ const ChatUI = ({ chatNumber, answerSelected, username }) => {
       }
       setMessages([...messages, { content: inputValue, sender: 'user' }])
       setInputValue('')
-      const response = await axios.post('http://localhost:5000/run_LLM', {
-        message: inputValue,
-        chatNumber: chatNumber,
-        username: username,
-      })
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/run_LLM`,
+        {
+          message: inputValue,
+          chatNumber: chatNumber,
+          username: username,
+        },
+      )
 
       const aiMessage = response.data.message
       const renderedMessage = renderMarkdown(aiMessage)

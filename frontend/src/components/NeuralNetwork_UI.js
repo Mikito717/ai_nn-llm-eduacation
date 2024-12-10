@@ -39,20 +39,23 @@ const NeuralNetworkUI = ({ task, username, backToTaskList }) => {
   const handleCreate = async () => {
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:5000/run_NN', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}api/run_NN`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            layers: layers.map(Number),
+            learning_rate: parseFloat(learningRate),
+            epochs: parseInt(epochs),
+            task,
+            model_type: modelType, // モデルタイプを送信
+            algorithm, // アルゴリズムを送信
+          }),
         },
-        body: JSON.stringify({
-          layers: layers.map(Number),
-          learning_rate: parseFloat(learningRate),
-          epochs: parseInt(epochs),
-          task,
-          model_type: modelType, // モデルタイプを送信
-          algorithm, // アルゴリズムを送信
-        }),
-      })
+      )
       const data = await response.json()
       setNnData(data)
     } catch (error) {
@@ -86,21 +89,24 @@ const NeuralNetworkUI = ({ task, username, backToTaskList }) => {
 
   const handleBack = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/task_clear', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}api/task_clear`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            accuracy: nnData.accuracy * 100,
+            elapsed_time: nnData.elapsed_time,
+            memory_usage: nnData.memory_usage,
+            task_id: task.id,
+            model: 'NeuralNetwork',
+            algorithm: algorithm, // 学習アルゴリズムを追加
+          }),
         },
-        body: JSON.stringify({
-          username,
-          accuracy: nnData.accuracy * 100,
-          elapsed_time: nnData.elapsed_time,
-          memory_usage: nnData.memory_usage,
-          task_id: task.id,
-          model: 'NeuralNetwork',
-          algorithm: algorithm, // 学習アルゴリズムを追加
-        }),
-      })
+      )
     } catch (error) {
       console.error('Error:', error)
     }

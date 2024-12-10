@@ -14,7 +14,7 @@ const SelectedTask = ({ handleback, handleClick, username }) => {
   const [error, setError] = useState(null)
 
   const fetchData = async () => {
-    fetch('http://localhost:5000/api/get_quests', {
+    fetch(`${process.env.REACT_APP_API_URL}api/get_quests`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
