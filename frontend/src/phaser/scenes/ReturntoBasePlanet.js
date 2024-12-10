@@ -25,7 +25,7 @@ class ReturntoBasePlanet extends Phaser.Scene {
       this.planets_blue = this.registry.get('gotplanets_blue')
       this.username = this.registry.get('username')
 
-      fetch('http://localhost:5000/api/set_planet_number', {
+      fetch(`${process.env.REACT_APP_API_URL}set_planet_number`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

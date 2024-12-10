@@ -39,23 +39,20 @@ const NeuralNetworkUI = ({ task, username, backToTaskList }) => {
   const handleCreate = async () => {
     setLoading(true)
     try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}api/run_NN`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            layers: layers.map(Number),
-            learning_rate: parseFloat(learningRate),
-            epochs: parseInt(epochs),
-            task,
-            model_type: modelType, // モデルタイプを送信
-            algorithm, // アルゴリズムを送信
-          }),
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/run_NN`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
+        body: JSON.stringify({
+          layers: layers.map(Number),
+          learning_rate: parseFloat(learningRate),
+          epochs: parseInt(epochs),
+          task,
+          model_type: modelType, // モデルタイプを送信
+          algorithm, // アルゴリズムを送信
+        }),
+      })
       const data = await response.json()
       setNnData(data)
     } catch (error) {

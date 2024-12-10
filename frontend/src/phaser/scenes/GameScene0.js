@@ -50,7 +50,7 @@ class GameScene0 extends Phaser.Scene {
 
   create() {
     //flaskからデータを受け取る
-    fetch('http://localhost:5000/api/get_planet_number', {
+    fetch(`${process.env.REACT_APP_API_URL}get_planet_number`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

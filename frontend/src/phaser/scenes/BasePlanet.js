@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import PreprocessData from './PreprocessData'
 
 //todo:UI作成
 //todo:使用AIを羅列する
@@ -21,7 +22,7 @@ class BasePlanet extends Phaser.Scene {
 
   create() {
     //flaskから取得したユーザー名を取得
-    fetch('http://localhost:5000/api/get_planet_number', {
+    fetch(`${process.env.REACT_APP_API_URL}api/get_planet_number`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +38,7 @@ class BasePlanet extends Phaser.Scene {
       })
 
     //flaskに、ml_modelのリクエストを送る
-    fetch('http://localhost:5000/api/get_ml_models', {
+    fetch(`${process.env.REACT_APP_API_URL}/api/get_ml_models`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
