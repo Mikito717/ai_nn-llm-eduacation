@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "https://Mikito717.github.io/ai_nn-llm-eduacation/static/css/main.59707c40.css",
-    "main.js": "https://Mikito717.github.io/ai_nn-llm-eduacation/static/js/main.d705677f.js",
+    "main.js": "https://Mikito717.github.io/ai_nn-llm-eduacation/static/js/main.87bfc5ad.js",
     "index.html": "https://Mikito717.github.io/ai_nn-llm-eduacation/index.html",
     "main.59707c40.css.map": "https://Mikito717.github.io/ai_nn-llm-eduacation/static/css/main.59707c40.css.map",
-    "main.d705677f.js.map": "https://Mikito717.github.io/ai_nn-llm-eduacation/static/js/main.d705677f.js.map"
+    "main.87bfc5ad.js.map": "https://Mikito717.github.io/ai_nn-llm-eduacation/static/js/main.87bfc5ad.js.map"
   },
   "entrypoints": [
     "static/css/main.59707c40.css",
-    "static/js/main.d705677f.js"
+    "static/js/main.87bfc5ad.js"
   ]
 }
